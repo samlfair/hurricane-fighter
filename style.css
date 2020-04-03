@@ -159,6 +159,26 @@ body {
   border-radius: 5px 0px 0px 0px;
 }
 
+.ocean-left.ocean-above.ocean-right {
+  border-radius: 5px 5px 0px 0px;
+}
+
+.ocean-above.ocean-right.ocean-below {
+  border-radius: 0px 5px 5px 0px;
+}
+
+.ocean-right.ocean-below.ocean-left {
+  border-radius: 0px 0px 5px 5px;
+}
+
+.ocean-below.ocean-left.ocean-above {
+  border-radius: 5px 0px 0px 5px;
+}
+
+.ocean-below.ocean-left.ocean-above.ocean-right {
+  border-radius: 5px 5px 5px 5px;
+}
+
 /*                  */
 /*                  */
 /* COLUMNS AND ROWS */
