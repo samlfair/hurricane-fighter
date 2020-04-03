@@ -1,0 +1,399 @@
+body {
+  margin: 0;
+  background: white;
+  font-family: "Press Start 2p", monospace;
+}
+
+#container {
+  margin: 20px auto;
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  align-content: stretch;
+  /* width: 100vw; */
+  /* height: 66vw; */
+  max-width: 840px;
+}
+
+#grid-container {
+  display: grid;
+  grid-template-rows: repeat(25, 4%);
+  grid-template-columns: repeat(33, 3.03%);
+  width: 100vw;
+  height: 66vw;
+  max-height: 528px;
+  background: blue;
+  /* background-image: url(./images/6Qys.gif); */
+  background-repeat: repeat;
+  background-position: center;
+  background-size: auto;
+  border: 6px inset grey;
+  overflow: hidden;
+}
+
+#grid-container > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  text-align: center;
+}
+
+#grid-container > div > p {
+  text-shadow: 1px 1px #fff, -1px -1px #fff, 1px -1px #fff, -1px 1px #fff;
+  font-size: 0.7em;
+  padding: 0;
+  margin: 0;
+  z-index: 2;
+}
+
+#grid-container > div > img {
+  width: 30px;
+  order: -1;
+  z-index: 1;
+}
+
+#grid-container > div > span {
+  width: 120px;
+  animation: 4s spin;
+  order: -1;
+}
+
+.hurricane {
+  position: relative;
+  transition: all 1s;
+  margin: 0;
+  z-index: 3;
+}
+
+.hurricane-move {
+  margin-bottom: 40px;
+  margin-right: 50px;
+}
+
+.land {
+  background: lightgreen;
+  background-image: url(./images/grass.png);
+  background-repeat: repeat;
+  background-size: cover;
+}
+
+.land:hover {
+  background-image: none;
+  background-color: rgb(103, 192, 67);
+}
+
+/* BORDERS */
+
+.border-east {
+  border-right: 2px dotted black;
+}
+
+.border-south {
+  border-bottom: 2px dotted black;
+}
+
+.border-west {
+  border-left: 2px dotted black;
+}
+
+/*           */
+/*           */
+/* STATS BOX */
+/*           */
+/*           */
+
+#stats {
+  background: white;
+  min-height: 20px;
+  width: 100%;
+  padding-top: 20px;
+}
+
+/*                         */
+/*                         */
+/* BOX SHADOWS AND BORDERS */
+/*                         */
+/*                         */
+
+.row25.ocean-below,
+.row25.ocean-right {
+  -webkit-box-shadow: 2px 0px 0px 0px rgba(0, 0, 0, 1);
+}
+
+.ocean-above {
+  border-top: 2px solid green;
+}
+
+.ocean-below {
+  border-bottom: 2px solid green;
+  -webkit-box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+  /* add browser box shadow here */
+}
+
+.ocean-right {
+  border-right: 2px solid green;
+  -webkit-box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+  /* add browser box shadow here */
+}
+
+.ocean-left {
+  border-left: 2px solid green;
+}
+
+.ocean-below.ocean-right {
+  border-radius: 0px 0px 5px 0px;
+}
+
+.ocean-below.ocean-left {
+  border-radius: 0px 0px 0px 5px;
+}
+
+.ocean-above.ocean-right {
+  border-radius: 0px 5px 0px 0px;
+}
+
+.ocean-above.ocean-left {
+  border-radius: 5px 0px 0px 0px;
+}
+
+/*                  */
+/*                  */
+/* COLUMNS AND ROWS */
+/*                  */
+/*                  */
+
+.col1 {
+  grid-column-start: 1;
+  grid-column-end: 2;
+}
+.col2 {
+  grid-column-start: 2;
+  grid-column-end: 3;
+}
+.col3 {
+  grid-column-start: 3;
+  grid-column-end: 4;
+}
+.col4 {
+  grid-column-start: 4;
+  grid-column-end: 5;
+}
+.col5 {
+  grid-column-start: 5;
+  grid-column-end: 6;
+}
+.col6 {
+  grid-column-start: 6;
+  grid-column-end: 7;
+}
+.col7 {
+  grid-column-start: 7;
+  grid-column-end: 8;
+}
+.col8 {
+  grid-column-start: 8;
+  grid-column-end: 9;
+}
+.col9 {
+  grid-column-start: 9;
+  grid-column-end: 10;
+}
+.col10 {
+  grid-column-start: 10;
+  grid-column-end: 11;
+}
+.col11 {
+  grid-column-start: 11;
+  grid-column-end: 12;
+}
+.col12 {
+  grid-column-start: 12;
+  grid-column-end: 13;
+}
+.col13 {
+  grid-column-start: 13;
+  grid-column-end: 14;
+}
+.col14 {
+  grid-column-start: 14;
+  grid-column-end: 15;
+}
+.col15 {
+  grid-column-start: 15;
+  grid-column-end: 16;
+}
+.col16 {
+  grid-column-start: 16;
+  grid-column-end: 17;
+}
+.col17 {
+  grid-column-start: 17;
+  grid-column-end: 18;
+}
+.col18 {
+  grid-column-start: 18;
+  grid-column-end: 19;
+}
+.col19 {
+  grid-column-start: 19;
+  grid-column-end: 20;
+}
+.col20 {
+  grid-column-start: 20;
+  grid-column-end: 21;
+}
+.col21 {
+  grid-column-start: 21;
+  grid-column-end: 22;
+}
+.col22 {
+  grid-column-start: 22;
+  grid-column-end: 23;
+}
+.col23 {
+  grid-column-start: 23;
+  grid-column-end: 24;
+}
+.col24 {
+  grid-column-start: 24;
+  grid-column-end: 25;
+}
+.col25 {
+  grid-column-start: 25;
+  grid-column-end: 26;
+}
+.col26 {
+  grid-column-start: 26;
+  grid-column-end: 27;
+}
+.col27 {
+  grid-column-start: 27;
+  grid-column-end: 28;
+}
+.col28 {
+  grid-column-start: 28;
+  grid-column-end: 29;
+}
+.col29 {
+  grid-column-start: 29;
+  grid-column-end: 30;
+}
+.col30 {
+  grid-column-start: 30;
+  grid-column-end: 31;
+}
+.col31 {
+  grid-column-start: 31;
+  grid-column-end: 32;
+}
+.col32 {
+  grid-column-start: 32;
+  grid-column-end: 33;
+}
+.col33 {
+  grid-column-start: 33;
+  grid-column-end: 34;
+}
+.row1 {
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+.row2 {
+  grid-row-start: 2;
+  grid-row-end: 3;
+}
+.row3 {
+  grid-row-start: 3;
+  grid-row-end: 4;
+}
+.row4 {
+  grid-row-start: 4;
+  grid-row-end: 5;
+}
+.row5 {
+  grid-row-start: 5;
+  grid-row-end: 6;
+}
+.row6 {
+  grid-row-start: 6;
+  grid-row-end: 7;
+}
+.row7 {
+  grid-row-start: 7;
+  grid-row-end: 8;
+}
+.row8 {
+  grid-row-start: 8;
+  grid-row-end: 9;
+}
+.row9 {
+  grid-row-start: 9;
+  grid-row-end: 10;
+}
+.row10 {
+  grid-row-start: 10;
+  grid-row-end: 11;
+}
+.row11 {
+  grid-row-start: 11;
+  grid-row-end: 12;
+}
+.row12 {
+  grid-row-start: 12;
+  grid-row-end: 13;
+}
+.row13 {
+  grid-row-start: 13;
+  grid-row-end: 14;
+}
+.row14 {
+  grid-row-start: 14;
+  grid-row-end: 15;
+}
+.row15 {
+  grid-row-start: 15;
+  grid-row-end: 16;
+}
+.row16 {
+  grid-row-start: 16;
+  grid-row-end: 17;
+}
+.row17 {
+  grid-row-start: 17;
+  grid-row-end: 18;
+}
+.row18 {
+  grid-row-start: 18;
+  grid-row-end: 19;
+}
+.row19 {
+  grid-row-start: 19;
+  grid-row-end: 20;
+}
+.row20 {
+  grid-row-start: 20;
+  grid-row-end: 21;
+}
+.row21 {
+  grid-row-start: 21;
+  grid-row-end: 22;
+}
+.row22 {
+  grid-row-start: 22;
+  grid-row-end: 23;
+}
+.row23 {
+  grid-row-start: 23;
+  grid-row-end: 24;
+}
+.row24 {
+  grid-row-start: 24;
+  grid-row-end: 25;
+}
+.row25 {
+  grid-row-start: 25;
+  grid-row-end: 26;
+}
