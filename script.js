@@ -122,7 +122,7 @@ function renderHurricane(hurricane) {
   let hurricaneDiv = document.createElement("div");
   hurricaneDiv.classList.add("hurricane");
   hurricaneDiv.innerHTML = `<p>${hurricane.name}</p>`;
-  hurricaneDiv.className += "hurricane " + hurricane.position;
+  hurricaneDiv.className += " " + hurricane.position;
   hurricaneDiv.innerHTML += `<span class="icon">🌊</span>`;
   hurricaneDiv.setAttribute("data-hurricane", hurricane.id);
   hurricaneDiv.addEventListener("click", clickOnHurricane);
