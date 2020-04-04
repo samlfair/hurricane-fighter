@@ -34,11 +34,15 @@ body {
 
 #grid-container > div {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   overflow: visible;
   text-align: center;
+}
+
+#grid-container > .city,
+#grid-container > .hurricane {
+  flex-direction: column;
 }
 
 #grid-container > div > p {
@@ -127,16 +131,17 @@ body {
   border-top: 2px solid green;
 }
 
-.ocean-below {
-  border-bottom: 2px solid green;
+.land {
   -webkit-box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
   /* add browser box shadow here */
 }
 
+.ocean-below {
+  border-bottom: 2px solid green;
+}
+
 .ocean-right {
   border-right: 2px solid green;
-  -webkit-box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
-  /* add browser box shadow here */
 }
 
 .ocean-left {
@@ -177,6 +182,54 @@ body {
 
 .ocean-below.ocean-left.ocean-above.ocean-right {
   border-radius: 5px 5px 5px 5px;
+}
+
+/* INNER BORDERS */
+
+.border-top-left::before {
+  height: 2px;
+  width: 2px;
+  content: "";
+  border-right: 2px solid green;
+  border-bottom: 2px solid green;
+  border-bottom-right-radius: 4px;
+  align-self: flex-start;
+  margin-right: auto;
+}
+
+.border-top-right::after {
+  height: 2px;
+  width: 2px;
+  content: "";
+  border-left: 2px solid green;
+  border-bottom: 2px solid green;
+  border-bottom-left-radius: 4px;
+  align-self: flex-start;
+  margin-left: auto;
+}
+
+.border-bottom-left::before {
+  height: 2px;
+  width: 2px;
+  content: "";
+  border-top: 2px solid green;
+  border-right: 2px solid green;
+  border-top-right-radius: 4px;
+  vertical-align: bottom;
+  align-self: flex-end;
+  margin-right: auto;
+}
+
+.border-bottom-right::after {
+  height: 2px;
+  width: 2px;
+  content: "";
+  border-top: 2px solid green;
+  border-left: 2px solid green;
+  border-top-left-radius: 4px;
+  vertical-align: bottom;
+  align-self: flex-end;
+  margin-left: auto;
 }
 
 /*                  */

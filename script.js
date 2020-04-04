@@ -39,22 +39,22 @@ const features = {
       name: "New Orleans",
       colIndex: 14,
       rowIndex: 7,
-      position: "col15 row8"
+      position: "col15 row8",
     },
     miami: {
       type: "city",
       name: "Miami",
       colIndex: 23,
       rowIndex: 12,
-      position: "col24 row12"
+      position: "col24 row12",
     },
     houston: {
       type: "city",
       name: "Houston",
       colIndex: 9,
       rowIndex: 10,
-      position: "col10 row10"
-    }
+      position: "col10 row10",
+    },
   },
   hurricanes: {
     jim: {
@@ -63,9 +63,9 @@ const features = {
       name: "Hurricane Jim",
       colIndex: 17,
       rowIndex: 13,
-      position: "col18 row14"
-    }
-  }
+      position: "col18 row14",
+    },
+  },
 };
 
 // Imports and Variabls
@@ -90,7 +90,7 @@ function createArray(columns, rows) {
         startingClasses: arrayItem.classes,
         features: arrayItem.features ? arrayItem.features : null,
         row: rowNumber,
-        col: i + 1
+        col: i + 1,
       };
       row.push(object);
       counter++;
@@ -103,8 +103,8 @@ function createArray(columns, rows) {
 // 2. Render the HTML
 
 function renderDivGrid(gridArray) {
-  gridArray.forEach(function(row, rowIndex) {
-    row.forEach(function(item, colIndex) {
+  gridArray.forEach(function (row, rowIndex) {
+    row.forEach(function (item, colIndex) {
       let div = document.createElement("div");
       div.className = item.startingClasses;
       div.setAttribute("data-row-index", rowIndex);
@@ -120,8 +120,9 @@ function renderDivGrid(gridArray) {
 
 function renderHurricane(hurricane) {
   let hurricaneDiv = document.createElement("div");
+  hurricaneDiv.classList.add("hurricane");
   hurricaneDiv.innerHTML = `<p>${hurricane.name}</p>`;
-  hurricaneDiv.className += " hurricane " + hurricane.position;
+  hurricaneDiv.className += "hurricane " + hurricane.position;
   hurricaneDiv.innerHTML += `<span class="icon">🌊</span>`;
   hurricaneDiv.setAttribute("data-hurricane", hurricane.id);
   hurricaneDiv.addEventListener("click", clickOnHurricane);
@@ -148,12 +149,10 @@ function renderCities() {
   for (const city in cities) {
     let cityDiv = document.createElement("div");
     cityDiv.innerHTML = `<p>${cities[city].name}</p><img class="city" src="./images/city-1.png">`;
-    cityDiv.className += " " + cities[city].position;
+    cityDiv.className += "city " + cities[city].position;
     htmlGrid.appendChild(cityDiv);
   }
 }
-
-renderCities();
 
 // CLICK ON SQUARE
 
