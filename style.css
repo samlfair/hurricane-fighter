@@ -59,51 +59,40 @@ body {
   justify-content: center;
   overflow: visible;
   text-align: center;
-}
-
-#grid-container > .city,
-#grid-container > .hurricane {
+  text-shadow: 1px 1px #fff, -1px -1px #fff, 1px -1px #fff, -1px 1px #fff;
   flex-direction: column;
 }
 
-#grid-container > div > p {
-  text-shadow: 1px 1px #fff, -1px -1px #fff, 1px -1px #fff, -1px 1px #fff;
+#grid-container > div > * {
   font-size: 0.7em;
   padding: 0;
   margin: 0;
   z-index: 2;
 }
 
-#grid-container > div.city:focus {
+#grid-container > .city:focus {
   color: orange;
   outline: none;
 }
 
-#grid-container > div.city > img {
+#grid-container > .city span > img {
   width: 30px;
   order: -1;
   z-index: 1;
 }
 
-.hurricane {
-  position: relative;
-  transition: all 1s;
-  margin: 0;
-  z-index: 3;
+#grid-container div > * {
+  width: 100px;
 }
 
-#grid-container div.hurricane p.small {
-  font-size: 0.5em;
-  width: 100px;
+#grid-container div h2 {
+  font-size: 0.7em;
+  width: 140px;
   padding-top: 2px;
 }
 
-.ammo {
-  width: 100px;
-}
-
-#grid-container > div.hurricane > span {
-  order: -1;
+#grid-container div p {
+  font-size: 0.6em;
 }
 
 .land {
