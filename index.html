@@ -20,8 +20,31 @@
       <div id="grid-container"></div>
       <div id="stats">
         <div class="nes-container is-rounded">
-          <p>Uh oh... there's a hurricane coming.</p>
-          <p>We better get some guns.</p>
+          <button type="button" class="nes-btn is-primary" id="turn">
+            Next Turn
+          </button>
+          <button type="button" class="nes-btn is-disabled" id="ammo-button">
+            Buy Ammo
+          </button>
+          <button type="button" class="nes-btn is-disabled" id="shoot">
+            Shoot
+          </button>
+          <h2>Rating</h2>
+          <progress
+            class="nes-progress is-primary"
+            id="rating"
+            value="6"
+            max="10"
+          ></progress>
+          <h2>Budget</h2>
+          <progress
+            class="nes-progress is-warning"
+            id="budget"
+            value="5000"
+            max="10000"
+          ></progress>
+          <!-- <p>Uh oh... there's a hurricane coming.</p>
+          <p>We better get some guns.</p> -->
         </div>
       </div>
     </div>

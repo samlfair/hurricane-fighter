@@ -68,6 +68,63 @@ const features = {
   },
 };
 
+// Game features
+
+const game = {
+  rating: 5,
+  budget: 5000,
+  changeRating: changeRating,
+  changeBudget: changeBudget,
+};
+
+const ratingBar = document.getElementById("rating");
+const budgetBar = document.getElementById("budget");
+
+function changeRating(num) {
+  this.rating += num;
+  this.rating < 0 ? (this.rating = 0) : null;
+  this.rating > 10 ? (this.rating = 10) : null;
+  ratingBar.setAttribute("value", this.rating);
+  return this.rating;
+}
+
+function changeBudget(num) {
+  this.budget += num;
+  this.rating < 0 ? (this.rating = 0) : null;
+  this.rating > 10000 ? (this.rating = 10000) : null;
+  budgetBar.setAttribute("value", this.budget);
+}
+
+ratingBar.onclick = () => game.changeRating(randomNumber(-2, 2));
+budgetBar.onclick = () => game.changeBudget(randomNumber(-2, 2) * 1000);
+
+game.changeRating(-4);
+game.changeBudget(-4000);
+
+// Basic Functions
+
+function randomNumber(min, max) {
+  let spread = max - min;
+  let number = Math.floor(Math.random() * (spread + 1)) + min;
+  return number;
+}
+
+function randomizeOutcome(functionOne, functionTwo, oddsOne, oddsTwo) {
+  // odds are expressed as an X:Y ratio
+  let winner = randomNumber(1, oddsOne + oddsTwo);
+  console.log(winner);
+  return winner <= oddsOne ? functionOne : functionTwo;
+}
+
+function move(xMinChange, xMaxChange, yMinChange, yMaxChange) {
+  this.htmlNode.classList.remove("col" + this.colIndex);
+  this.htmlNode.classList.remove("row" + this.rowIndex);
+  this.colIndex += randomNumber(xMinChange, xMaxChange);
+  this.rowIndex += randomNumber(yMinChange, yMaxChange);
+  this.htmlNode.classList.add("col" + this.colIndex);
+  this.htmlNode.classList.add("row" + this.rowIndex);
+}
+
 // Imports and Variabls
 
 import startingMap from "./map.js";
@@ -116,38 +173,100 @@ function renderDivGrid(gridArray) {
   });
 }
 
+// 4. Render Hurricane
+
+const listOfNames = ["Amanda", "Brian", "Caitlin", "Devon", "Elizabeth"];
+const hurricanes = [];
+
+function createHurricane() {
+  let object = {
+    name: listOfNames.shift(),
+    colIndex: randomNumber(19, 30),
+    rowIndex: randomNumber(16, 22),
+    path: [],
+    strength: 1,
+    htmlNode: null,
+    move: move,
+    getWeaker: getWeaker,
+    getStronger: getStronger,
+    click: click,
+  };
+  object.htmlNode = createHtmlNode(object, "hurricane");
+  object.htmlNode.innerHTML = `<span class="icon">🌊</span><p>${object.name}</p><p class="small">Category ${object.strength}</p>`;
+  function click(object){
+
+  }
+  hurricanes.push(object);
+  function helpfulFunction() {
+    console.log(object);
+  }
+  function getWeaker(object) {
+    // perform function
+  }
+}
+
+mover(){}
+strengthener(){}
+weakener(){}
+
+
+createHurricane();
+
+function getWeaker() {
+  this.strength--;
+  this.htmlNode.innerHTML = `<span class="icon">🌊</span><p>${this.name}</p><p class="small">Category ${this.strength}</p>`;
+  console.log(
+    `${this.name} got less strong. It is now category ${this.strength}.`
+  );
+}
+
+function getStronger() {
+  this.strength++;
+  this.htmlNode.innerHTML = `<span class="icon">🌊</span><p>${this.name}</p><p class="small">Category ${this.strength}</p>`;
+  console.log(
+    `${this.name} got stronger. It is now category ${this.strength}.`
+  );
+  console.log(this);
+}
+
+function createHtmlNode(object, divClass) {
+  let div = document.createElement("div");
+  div.classList.add(divClass, "col" + colIndex, "row" + rowIndex);
+  htmlGrid.appendChild(div);
+  return div;
+}
+
+// TURN CHANGE
+
+document.getElementById("turn").onclick = turnClick;
+
+function turnClick() {
+  hurricanes[0].move(-2, 0, -2, 0);
+  console.log(hurricanes[0]);
+  hurricanes[0].getStronger();
+}
+
+// function clickOnHurricane(e) {
+//   // RANDOMIZE FUNCTION ARGS: (RANGE, OFFSET)
+//   let moveX = Math.floor(Math.random() * 4) - 1;
+//   let moveY = Math.floor(Math.random() * 4);
+//   // END REFACTOR
+//   let object = getHurricaneFromHtmlElement(e.target);
+//   object.htmlNode.classList.remove(`col${object.colIndex + 1}`);
+//   object.htmlNode.classList.remove(`row${object.rowIndex + 1}`);
+//   object.colIndex -= moveX;
+//   object.rowIndex -= moveY;
+//   object.position = `col${object.colIndex + 1} row${object.rowIndex + 1}`;
+//   object.htmlNode.className += " " + object.position;
+// }
+
 // 3. Render Features
-
-function renderHurricane(hurricane) {
-  let hurricaneDiv = document.createElement("div");
-  hurricaneDiv.classList.add("hurricane");
-  hurricaneDiv.innerHTML = `<p>${hurricane.name}</p>`;
-  hurricaneDiv.className += " " + hurricane.position;
-  hurricaneDiv.innerHTML += `<span class="icon">🌊</span>`;
-  hurricaneDiv.setAttribute("data-hurricane", hurricane.id);
-  hurricaneDiv.addEventListener("click", clickOnHurricane);
-  hurricane.htmlNode = hurricaneDiv;
-  htmlGrid.appendChild(hurricaneDiv);
-}
-
-function clickOnHurricane(e) {
-  // RANDOMIZE FUNCTION ARGS: (RANGE, OFFSET)
-  let moveX = Math.floor(Math.random() * 4) - 1;
-  let moveY = Math.floor(Math.random() * 4);
-  // END REFACTOR
-  let object = getHurricaneFromHtmlElement(e.target);
-  object.htmlNode.classList.remove(`col${object.colIndex + 1}`);
-  object.htmlNode.classList.remove(`row${object.rowIndex + 1}`);
-  object.colIndex -= moveX;
-  object.rowIndex -= moveY;
-  object.position = `col${object.colIndex + 1} row${object.rowIndex + 1}`;
-  object.htmlNode.className += " " + object.position;
-}
 
 function renderCities() {
   let cities = features.cities;
   for (const city in cities) {
     let cityDiv = document.createElement("div");
+    cityDiv.setAttribute("tabindex", -1);
     cityDiv.innerHTML = `<p>${cities[city].name}</p><img class="city" src="./images/city-1.png">`;
     cityDiv.className += "city " + cities[city].position;
     htmlGrid.appendChild(cityDiv);
@@ -189,4 +308,34 @@ function getPositionFromHtmlElement(htmlElement) {
 
 renderDivGrid(gridArray);
 renderCities();
-renderHurricane(features.hurricanes.jim);
+
+let ammoButton = document.getElementById("ammo-button");
+
+let newOrleans = document.querySelector(".city.col15.row8");
+
+newOrleans.onfocus = function () {
+  ammoButton.classList.remove("is-disabled");
+};
+
+newOrleans.addEventListener("focusout", () => {
+  document.getElementById("ammo-button").classList.add("is-disabled");
+});
+
+newOrleans.onfocusout = function () {
+  document.getElementById("ammo-button").classList.add("is-disabled");
+};
+
+ammoButton.onclick = function (e) {
+  console.log("Yeah!");
+  let ammo = document.createElement("p");
+  ammo.style.width = "100px;";
+  ammo.classList.add("ammo");
+  ammo.innerText = "💣1";
+  newOrleans.appendChild(ammo);
+};
+
+// onclick = function () {
+//   document.getElementById("stockpilebutton").classList.remove("is-disabled");
+// };
+
+// let houston = document.querySelector(".city.col10.row10");
