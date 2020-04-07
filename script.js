@@ -6,6 +6,7 @@ NOTES
 - to move the hurricane: get the width and height of any div, then use pythagoras + margin-bottom, margin-left to move it
 - write a script
 
+
 - Change cursor; must display clickability
 
 - Write function for adding and removing classes on element
@@ -31,11 +32,14 @@ Notes from Franck:
 // Map features
 
 // Basic Functions
-
 function randomNumber(min, max) {
   let spread = max - min;
   let number = Math.floor(Math.random() * (spread + 1)) + min;
   return number;
+}
+
+function pythagorean(sideA, sideB) {
+  return Math.sqrt(Math.pow(sideA, 2) + Math.pow(sideB, 2));
 }
 
 const listOfNames = ["Amanda", "Brian", "Caitlin", "Devon", "Elizabeth"];
@@ -43,6 +47,16 @@ const hurricanes = [];
 
 import startingMap from "./map-1.js";
 let htmlGrid = document.getElementById("grid-container");
+let buttonBox = document.getElementById("city-buttons");
+let ammoButton = document.getElementById("ammo-button");
+let cityCancelButton = document.getElementById("city-cancel-button");
+let shootButton = document.getElementById("shoot-button");
+
+const selected = {
+  itemOne: null,
+  itemTwo: null,
+  function: null,
+};
 
 // 2. Render the HTML
 
@@ -67,14 +81,17 @@ function renderDivGrid(array) {
 const renderer = (state) => ({
   render() {
     state.htmlNode.classList.add(
-      state.htmlClass,
+      state.type,
       "col" + state.colIndex,
       "row" + state.rowIndex
     );
     state.iconNode.innerHTML = state.icon;
-    switch (state.htmlClass) {
+    switch (state.type) {
       case "hurricane":
         state.subtitle = `Category ${state.strength}`;
+        break;
+      case "city":
+        state.subtitle = `Ammo: ${state.ammo}`;
         break;
     }
     state.subtitleNode.innerText = state.subtitle;
@@ -103,8 +120,8 @@ const shooter = (state) => ({
 });
 
 const strengthener = (state) => ({
-  strengthen() {
-    if (state.strength < 5) {
+  strengthen(supercharge = false) {
+    if (state.strength < 5 || supercharge) {
       state.strength++;
     }
   },
@@ -118,9 +135,7 @@ const weakener = (state) => ({
 
 const clicker = (state) => ({
   click() {
-    state.htmlNode.addEventListener("click", function () {
-      console.log(state);
-    });
+    console.log("click");
   },
 });
 
@@ -134,7 +149,7 @@ function Hurricane() {
     iconNode: document.createElement("span"),
     titleNode: document.createElement("h2"),
     subtitleNode: document.createElement("p"),
-    htmlClass: "hurricane",
+    type: "hurricane",
     icon: "🌊",
     subtitle: null,
   };
@@ -143,10 +158,6 @@ function Hurricane() {
   hurricane.htmlNode.addEventListener("click", function () {
     hurricaneClick(hurricane);
   });
-
-  function hurricaneClick(hurricane) {
-    console.log(hurricane);
-  }
 
   return Object.assign(
     hurricane,
@@ -169,7 +180,7 @@ function City(name, colIndex, rowIndex, iconUrl = "./images/city-1.png") {
     iconNode: document.createElement("span"),
     titleNode: document.createElement("h2"),
     subtitleNode: document.createElement("p"),
-    htmlClass: "city",
+    type: "city",
     icon: `<img src="${iconUrl}"></img>`,
     subtitle: null,
   };
@@ -180,16 +191,12 @@ function City(name, colIndex, rowIndex, iconUrl = "./images/city-1.png") {
     cityClick(city);
   });
 
-  function cityClick(city) {
-    console.log(city);
-  }
-
   return Object.assign(city, renderer(city), clicker(city), shooter(city));
 }
 
 function htmlNodeConstructor(object) {
   object.subtitleNode.innerHTML = object.subtitle;
-  object.htmlNode.classList.add(object.htmlClass);
+  object.htmlNode.classList.add(object.type);
   object.titleNode.innerText = object.name;
   object.htmlNode.appendChild(object.iconNode);
   object.htmlNode.appendChild(object.titleNode);
@@ -230,7 +237,7 @@ function hurricaneTurn(hurricane, index, array) {
       hurricane.strengthen();
       console.log(`Strength: ${hurricane.strength}`);
     }
-    if (rand === 5) {
+    if (rand === 5 && hurricane.strength !== 6) {
       hurricane.weaken();
     }
   }
@@ -271,8 +278,6 @@ renderDivGrid(startingMap);
 
 // Random Stuff
 
-let ammoButton = document.getElementById("ammo-button");
-
 let newOrleansSelect = document.querySelector(".city.col15.row8");
 
 newOrleansSelect.onfocus = function () {
@@ -286,3 +291,141 @@ newOrleansSelect.addEventListener("focusout", () => {
 newOrleansSelect.onfocusout = function () {
   document.getElementById("ammo-button").classList.add("is-disabled");
 };
+
+// Button Boxes
+
+cityCancelButton.addEventListener("click", function () {
+  buttonBox.classList.add("hidden");
+});
+
+shootButton.addEventListener("click", function () {
+  console.log("Shoot");
+});
+
+// CHARACTER CLICKING
+// CHARACTER CLICKING
+// CHARACTER CLICKING
+
+function cityClick(city) {
+  selected.itemOne = city;
+  if (selected.itemOne.type === "city") {
+    console.log(`${city.name} is selected as your first item.`);
+  } else if (selected.itemOne.type === "hurricane") {
+    selected.itemTwo = city;
+  }
+}
+
+function hurricaneClick(hurricane) {
+  if (selected.itemOne.type === "hurricane") {
+    selected.itemOne = hurricane;
+    console.log(`${hurricane.name} is selected as your first item.`);
+  } else if (selected.itemOne.type === "city") {
+    selected.itemTwo = hurricane;
+    shoot(selected.itemOne, selected.itemTwo, 1);
+  }
+}
+
+// SHOOTING
+// SHOOTING
+// SHOOTING
+
+function shoot(shooter, target) {
+  // starter variables
+  let hit = null;
+  let deltaX = shooter.colIndex - target.colIndex;
+  let deltaY = shooter.rowIndex - target.rowIndex;
+  let distance = Math.round(pythagorean(deltaX, deltaY));
+
+  // subtract from ammo
+  if (shooter.type === "city") {
+    shooter.ammo--;
+    shooter.render();
+  }
+
+  // determine hit
+  if (distance < 6) {
+    hit = !!randomNumber(0, 1);
+  } else {
+    hit = !randomNumber(0, distance / 3);
+  }
+  hit && target.type === "hurricane"
+    ? hurricaneHit(shooter, target)
+    : console.log("Miss!");
+}
+
+/*
+
+1   1/2
+2   1/2
+3   1/2
+4   1/2
+5   1/2
+
+*/
+
+function hurricaneHit(shooter, target) {
+  console.log(`${shooter.name} hit ${target.name}!`);
+
+  // Category 1 + 2
+  if (target.strength < 3) {
+    let result = randomNumber(0, 5);
+    if (result === 4) {
+      target.strengthen();
+      target.render();
+      console.log(
+        `You enraged ${target.name}. It has gotten stronger, and is now a category ${hurricane.strength}.`
+      );
+    } else if (result === 5) {
+      console.log(`${target.name} shot back!!!`);
+    } else {
+      target.weaken();
+      target.render();
+      console.log(
+        `${target.name} was weakened to a category ${target.strength}`
+      );
+    }
+
+    // Category 3 & 4
+  } else if (target.strength > 2 && target.strength < 5) {
+    let result = randomNumber(0, 2);
+    if (result === 2) {
+      target.strengthen();
+      target.render();
+      console.log(
+        `You enraged ${target.name}. It has gotten stronger, and is now a category ${hurricane.strength}.`
+      );
+    } else if (result === 3) {
+      console.log(`${target.name} shot back!!!`);
+    } else {
+      target.weaken();
+      target.render();
+      console.log(
+        `${target.name} was weakened to a category ${target.strength}`
+      );
+    }
+  }
+
+  // Category 5 & 6
+  else {
+    let result = randomNumber(0, 2);
+    if (result === 2) {
+      target.strengthen(true);
+      target.render();
+      console.log(
+        `You enraged ${target.name}. It has gotten stronger, and is now a category ${hurricane.strength}.`
+      );
+    } else if (result === 3) {
+      console.log(`${target.name} shot back!!!`);
+    } else {
+      target.weaken();
+      target.render();
+      console.log(
+        `${target.name} was weakened to a category ${target.strength}`
+      );
+    }
+  }
+}
+
+function miss() {
+  console.log("Miss!");
+}

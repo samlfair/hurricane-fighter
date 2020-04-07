@@ -5,13 +5,15 @@
   --shadow-color: black;
   --coastline-color: green;
   --coastline-radius: 5px;
+  --shadow-distance: 2px;
 }
 
 /* add border width variable */
 
 /* Helpful hover */
 
-#grid-container > div:hover {
+.land:hover,
+.ocean:hover {
   border: 2px solid black;
 }
 
@@ -51,9 +53,38 @@ body {
   overflow: hidden;
 }
 
+/* Overlay */
+
+#grid-container .button-box {
+  grid-column-start: 2;
+  /* grid-column-end: 33; */
+  grid-row-end: 24;
+  align-self: end;
+  justify-self: start;
+  z-index: 10;
+  background: white;
+  padding: 3px;
+  overflow: visible;
+  display: flex;
+}
+
+.button-box button {
+  height: 3em;
+  margin-right: 10px;
+  flex-wrap: wrap;
+  width: 200px;
+}
+
+#grid-container .button-box.hidden {
+  /* z-index: -1; */
+  /* display: none !important; */
+  display: none;
+}
+
 /* Features */
 
-#grid-container > div {
+.hurricane,
+.city {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -63,35 +94,45 @@ body {
   flex-direction: column;
 }
 
-#grid-container > div > * {
+.hurricane span,
+.city span {
+  text-shadow: none;
+}
+
+.land,
+.ocean {
+  display: flex;
+}
+
+.hurricane > *,
+.city > * {
   font-size: 0.7em;
   padding: 0;
   margin: 0;
   z-index: 2;
+  width: 100px;
 }
 
-#grid-container > .city:focus {
+.city:focus {
   color: orange;
   outline: none;
 }
 
-#grid-container > .city span > img {
+.city img {
   width: 30px;
   order: -1;
   z-index: 1;
 }
 
-#grid-container div > * {
-  width: 100px;
-}
-
-#grid-container div h2 {
+.hurricane h2,
+.city h2 {
   font-size: 0.7em;
   width: 140px;
   padding-top: 2px;
 }
 
-#grid-container div p {
+.hurricane p,
+.city p {
   font-size: 0.6em;
 }
 
@@ -148,17 +189,18 @@ body {
 /*                         */
 
 .land {
-  -webkit-box-shadow: 2px 2px 0px 0px var(--shadow-color);
+  -webkit-box-shadow: var(--shadow-distance) var(--shadow-distance) 0px 0px
+    var(--shadow-color);
   /* add browser box shadow here */
 }
 
 .ocean-below.col1 {
-  -webkit-box-shadow: 0px 2px 0px 0px var(--shadow-color);
+  -webkit-box-shadow: 0px var(--shadow-distance) 0px 0px var(--shadow-color);
 }
 
 .ocean-right.row1 {
-  -webkit-box-shadow: 2px 0px 0px 0px var(--shadow-color),
-    2px 2px 0px 0px var(--shadow-color);
+  -webkit-box-shadow: var(--shadow-distance) 0px 0px 0px var(--shadow-color),
+    var(--shadow-distance) var(--shadow-distance) 0px 0px var(--shadow-color);
 }
 
 .ocean-above {

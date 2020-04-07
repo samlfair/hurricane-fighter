@@ -17,17 +17,30 @@
   </head>
   <body>
     <div id="container">
-      <div id="grid-container"></div>
+      <div id="grid-container">
+        <div
+          id="city-buttons"
+          class="nes-container is-rounded button-box hidden"
+        >
+          <button type="button" id="shoot-button" class="nes-btn">
+            Shoot
+          </button>
+          <button type="button" id="ammo-button" class="nes-btn">
+            Buy Ammo
+          </button>
+          <button
+            type="button"
+            id="city-cancel-button"
+            class="nes-btn is-error"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
       <div id="stats">
         <div class="nes-container is-rounded">
           <button type="button" class="nes-btn is-primary" id="turn">
             Next Turn
-          </button>
-          <button type="button" class="nes-btn is-disabled" id="ammo-button">
-            Buy Ammo
-          </button>
-          <button type="button" class="nes-btn is-disabled" id="shoot">
-            Shoot
           </button>
           <h2>Rating</h2>
           <progress
