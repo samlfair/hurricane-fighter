@@ -18,23 +18,80 @@
   <body>
     <div id="container">
       <div id="grid-container">
-        <div
-          id="city-buttons"
-          class="nes-container is-rounded button-box hidden"
-        >
-          <button type="button" id="shoot-button" class="nes-btn">
-            Shoot
-          </button>
-          <button type="button" id="ammo-button" class="nes-btn">
-            Buy Ammo
-          </button>
-          <button
-            type="button"
-            id="city-cancel-button"
-            class="nes-btn is-error"
-          >
-            Cancel
-          </button>
+        <div class="nes-container is-rounded button-box">
+          <div class="inner-div">
+            <!-- 1. INTRODUCTION -->
+            <div id="introduction">
+              <p>
+                Hurricanes are running wild off the coast of the American south.
+              </p>
+              <p>
+                As leader of the free world, it's your job to stop them.
+                Stockpile ammo, build walls, and shoot at the hurricanes to keep
+                them out.
+              </p>
+              <p class="enter">Go »</p>
+            </div>
+
+            <!-- 2. CHOICES -->
+            <div id="city-choices" class="hidden">
+              <p>What would you like to do?</p>
+              <div class="label">
+                <input
+                  type="radio"
+                  name="action"
+                  value="shoot"
+                  id="shoot"
+                  checked
+                />
+                <label for="shoot">Shoot hurricane</label>
+              </div>
+              <div class="label">
+                <input
+                  type="radio"
+                  name="action"
+                  value="ammo"
+                  id="ammo"
+                  disabled
+                />
+                <label for="ammo">Buy ammo $100</label>
+              </div>
+              <div class="label">
+                <input
+                  type="radio"
+                  name="action"
+                  value="wall"
+                  id="wall"
+                  disabled
+                />
+                <label for="wall">Build wall $500</label>
+              </div>
+              <div class="label">
+                <input
+                  type="radio"
+                  name="action"
+                  value="nothing"
+                  id="nothing"
+                />
+                <label for="nothing">Nothing else for now</label>
+              </div>
+              <p class="enter">Enter</p>
+              <!-- <p class="cancel">Cancel</p> -->
+            </div>
+
+            <!-- 3. SHOOTING INSTRUCTIONS -->
+            <div id="shooting-instructions" class="hidden">
+              <p>Select a city to shoot from.</p>
+              <div class="selected-city"></div>
+              <p class="enter" disabled>Enter</p>
+            </div>
+
+            <!-- 4. HURRICANE CLICK -->
+            <div id="hurricane-click" class="hidden">
+              <p>Click on a hurricane to shoot at it.</p>
+            </div>
+            <!-- END SCRIPT -->
+          </div>
         </div>
       </div>
       <div id="stats">
@@ -56,8 +113,6 @@
             value="5000"
             max="10000"
           ></progress>
-          <!-- <p>Uh oh... there's a hurricane coming.</p>
-          <p>We better get some guns.</p> -->
         </div>
       </div>
     </div>
