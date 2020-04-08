@@ -5,24 +5,20 @@ export {
   listOfNames,
   hurricanes,
   selected,
-  approvalRating,
-  budget,
-};
-
-// Global Variables
-
-let approvalRating = 5;
-let budget = 5000;
-const selected = {
-  itemOne: null,
-  itemTwo: null,
-  function: null,
 };
 
 // Arrays
 
 const listOfNames = ["Amanda", "Brian", "Caitlin", "Devon", "Elizabeth"];
 const hurricanes = [];
+
+// Global Variables
+
+const selected = {
+  itemOne: { type: null },
+  itemTwo: { type: null },
+  function: null,
+};
 
 // Functions
 

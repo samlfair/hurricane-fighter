@@ -30,66 +30,32 @@
                 Stockpile ammo, build walls, and shoot at the hurricanes to keep
                 them out.
               </p>
-              <p class="enter">Go »</p>
+              <button class="enter">Next</button>
             </div>
-
-            <!-- 2. CHOICES -->
-            <div id="city-choices" class="hidden">
-              <p>What would you like to do?</p>
-              <div class="label">
-                <input
-                  type="radio"
-                  name="action"
-                  value="shoot"
-                  id="shoot"
-                  checked
-                />
-                <label for="shoot">Shoot hurricane</label>
-              </div>
-              <div class="label">
-                <input
-                  type="radio"
-                  name="action"
-                  value="ammo"
-                  id="ammo"
-                  disabled
-                />
-                <label for="ammo">Buy ammo $100</label>
-              </div>
-              <div class="label">
-                <input
-                  type="radio"
-                  name="action"
-                  value="wall"
-                  id="wall"
-                  disabled
-                />
-                <label for="wall">Build wall $500</label>
-              </div>
-              <div class="label">
-                <input
-                  type="radio"
-                  name="action"
-                  value="nothing"
-                  id="nothing"
-                />
-                <label for="nothing">Nothing else for now</label>
-              </div>
-              <p class="enter">Enter</p>
-              <!-- <p class="cancel">Cancel</p> -->
+            <!-- 2. INSTRUCTIONS 1 -->
+            <div id="instructions-1" class="hidden">
+              <p>
+                Keep in mind: election season is coming up. Try to keep your
+                approval rating up to improve your chances of reelection.
+              </p>
+              <button class="enter">OK</button>
             </div>
-
-            <!-- 3. SHOOTING INSTRUCTIONS -->
-            <div id="shooting-instructions" class="hidden">
-              <p>Select a city to shoot from.</p>
-              <div class="selected-city"></div>
-              <p class="enter" disabled>Enter</p>
+            <!-- 3. INSTRUCTIONS 2 -->
+            <div id="instructions-2" class="hidden">
+              <p>Instructions</p>
+              <p>
+                Select a city by clicking on it. Then click on a hurricane to
+                make the residents of that city shoot at the hurricane.
+              </p>
+              <p>
+                The further away the hurricane is, the more likely that you will
+                miss.
+              </p>
+              <button class="enter">OK</button>
             </div>
-
-            <!-- 4. HURRICANE CLICK -->
-            <div id="hurricane-click" class="hidden">
-              <p>Click on a hurricane to shoot at it.</p>
-            </div>
+            <!-- 4. DIALOGUE BOX -->
+            <div id="dialogue-box" class="hidden">Test</div>
+            <button class="enter" id="dialogue-box-button">OK</button>
             <!-- END SCRIPT -->
           </div>
         </div>
@@ -98,6 +64,9 @@
         <div class="nes-container is-rounded">
           <button type="button" class="nes-btn is-primary" id="turn">
             Next Turn
+          </button>
+          <button type="button" class="nes-btn" id="anon">
+            Action
           </button>
           <h2>Rating</h2>
           <progress

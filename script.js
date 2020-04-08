@@ -6,36 +6,75 @@ import * as elements from "./scripts/elements.js";
 import * as utilities from "./scripts/utilities.js";
 // import { City, Hurricane } from "./scripts/factoryFunctions.js";
 
+document.getElementById("anon").addEventListener("click", function () {
+  clearDialogueBox();
+  turnClick();
+});
+
+function nextTurn() {
+  clearDialogueBox();
+  turnClick();
+}
+
+function proceed() {
+  if (playersTurn) {
+    clearDialogueBox();
+    turnClick();
+  } else {
+    clearDialogueBox();
+  }
+}
+
+// If true, player's turn. If false, hurricane's turn.
+var playersTurn = true;
+
+elements.introButton.onclick = () => {
+  elements.introduction.classList.add("hidden");
+  elements.instructions1.classList.remove("hidden");
+};
+
+elements.instructions1Button.onclick = () => {
+  elements.instructions1.classList.add("hidden");
+  elements.instructions2.classList.remove("hidden");
+};
+
+elements.instructions2Button.onclick = () => {
+  elements.instructions2.classList.add("hidden");
+  elements.buttonBox.classList.add("hidden");
+  elements.dialogueBox.classList.remove("hidden");
+};
+
+elements.dialogueButton.onclick = () => {
+  proceed();
+};
+
+function clearDialogueBox() {
+  elements.dialogueBox.innerHTML = "";
+  elements.dialogueBox.classList.add("hidden");
+  elements.buttonBox.classList.add("hidden");
+}
+
+function renderDialogueBox(htmlString) {
+  elements.dialogueBox.innerHTML = "";
+  elements.dialogueBox.innerHTML += htmlString;
+  elements.dialogueBox.classList.remove("hidden");
+  elements.buttonBox.classList.remove("hidden");
+}
+
+function addToDialogueBox(htmlString) {
+  elements.dialogueBox.classList.remove("hidden");
+  elements.buttonBox.classList.remove("hidden");
+  elements.dialogueBox.innerHTML += htmlString;
+}
+
+// Global Variables
+
+let approvalRating = 5;
+let budget = 5000;
+
 // 1. Script
 
 // Introduction
-
-elements.startButton.addEventListener("click", function () {
-  elements.introduction.classList.add("hidden");
-  elements.choiceList.classList.remove("hidden");
-});
-
-// Choice
-
-elements.choiceButton.addEventListener("click", function () {
-  elements.choiceList.classList.add("hidden");
-  elements.shootingInstructions.classList.remove("hidden");
-  utilities.selected.function = shoot;
-});
-
-// Select City
-
-elements.citySelectButton.addEventListener("click", function () {
-  elements.shootingInstructions.classList.add("hidden");
-  elements.hurricaneBox.classList.remove("hidden");
-  setTimeout(function () {
-    turnClick();
-    elements.hurricaneBox.innerHTML =
-      "<p>Click on a hurricane to shoot at it.</p>";
-    elements.choiceList.classList.remove("hidden");
-    elements.hurricaneBox.classList.add("hidden");
-  }, 5000);
-});
 
 // RENDER MAP
 // RENDER MAP
@@ -119,14 +158,12 @@ const mover = (state) => ({
 
     traversion.forEach(function (square, index, array) {
       if (square.col === 1 || square.row === 1) {
-        console.log("You've reached the edge of the map.");
         array.splice(index + 1);
         let lastSquare = traversion[traversion.length - 1];
         colChange = lastSquare.col - colInitial;
         rowChange = lastSquare.row - rowInitial;
         colFinal = lastSquare.col;
         rowFinal = lastSquare.row;
-        // SET THE LAST SQUARE
       }
     });
 
@@ -143,7 +180,7 @@ const mover = (state) => ({
       setTimeout(function () {
         if (square.type === "land") {
           if (square.feature) {
-            console.log(
+            addToDialogueBox(
               `${state.name} has hit ${square.feature.city.name}! Your approval rating drops 3 points.`
             );
             lowerApprovalRating(3);
@@ -165,7 +202,7 @@ const mover = (state) => ({
 
       state.htmlNode.classList.add("col" + colFinal, "row" + rowFinal);
       if (state.colIndex === 1 || state.rowIndex === 1) {
-        console.log(`${state.name} disappeared.`);
+        addToDialogueBox(`${state.name} disappeared.`);
         state.htmlNode.remove();
         utilities.hurricanes.splice(
           utilities.hurricanes.findIndex((object) =>
@@ -176,14 +213,14 @@ const mover = (state) => ({
       }
     }, 3000);
 
-    // // Approval Rating
-    // setTimeout(function () {
-    //   console.log(`flood count: ${floodCount}`);
-    //   if (floodCount > 1) {
-    //     console.log(`${floodCount} squares of countryside were flooded.`);
-    //     lowerApprovalRating(Math.floor(floodCount / 2));
-    //   }
-    // }, 3500);
+    // Approval Rating
+    setTimeout(function () {
+      console.log(`flood count: ${floodCount}`);
+      if (floodCount > 1) {
+        addToDialogueBox(`${floodCount} squares of countryside were flooded.`);
+        lowerApprovalRating(Math.floor(floodCount / 2));
+      }
+    }, 3500);
   },
 });
 
@@ -205,7 +242,7 @@ const weakener = (state) => ({
   weaken() {
     state.strength--;
     if (state.strength <= 0) {
-      console.log(`${state.name} died.`);
+      addToDialogueBox(`${state.name} died.`);
       state.htmlNode.remove();
       utilities.hurricanes.splice(
         utilities.hurricanes.findIndex((object) =>
@@ -334,6 +371,7 @@ function hurricaneTurn(hurricane, index, array) {
 
 function squareClick(object) {
   console.log(object);
+  deselect();
 }
 
 // INITIALIZE
@@ -354,21 +392,25 @@ renderDivGrid(startingMap);
 // CHARACTER CLICKING
 
 function cityClick(city) {
-  if (utilities.selected.itemOne) {
-    utilities.selected.itemOne.htmlNode.classList.remove("utilities.selected");
+  if (utilities.selected.itemOne.type) {
+    utilities.selected.itemOne.htmlNode.classList.remove("selected");
   }
   utilities.selected.itemOne = city;
   city.htmlNode.classList.add("selected");
-  elements.selectedCityText.innerHTML = `<p>You have selected ${city.name}.</p>`;
 }
 
 function hurricaneClick(hurricane) {
-  if (utilities.selected.itemOne.type === "hurricane") {
-    utilities.selected.itemOne = hurricane;
-  } else if (utilities.selected.itemOne.type === "city") {
-    utilities.selected.itemTwo = hurricane;
-    shoot(utilities.selected.itemOne, utilities.selected.itemTwo, 1);
+  if (utilities.selected.itemOne.type === "city") {
+    shoot(utilities.selected.itemOne, hurricane, 1);
   }
+  deselect();
+}
+
+function deselect() {
+  if (utilities.selected.itemOne.type) {
+    utilities.selected.itemOne.htmlNode.classList.remove("selected");
+  }
+  utilities.selected.itemOne = { type: null };
 }
 
 // SHOOTING
@@ -397,14 +439,15 @@ function shoot(shooter, target) {
     }
     hit && target.type === "hurricane"
       ? hurricaneHit(shooter, target)
-      : (elements.hurricaneBox.innerHTML = `<p>Distance is ${distance}. It's a miss!</p>`);
+      : renderDialogueBox(`<p>Miss!</p>`);
   } else {
-    elements.hurricaneBox.innerHTML = "You're out of ammo!";
+    console.log("You're out of ammo!");
   }
 }
 
 function hurricaneHit(shooter, target) {
-  elements.hurricaneBox.innerHTML = `<p>${shooter.name} hit ${target.name}!</p>`;
+  renderDialogueBox(`<p>${shooter.name} hit ${target.name}!</p>`);
+  var resultText = "";
 
   // Category 1 + 2
   if (target.strength < 3) {
@@ -412,15 +455,15 @@ function hurricaneHit(shooter, target) {
     if (result === 4) {
       target.strengthen();
       target.render();
-      elements.hurricaneBox.innerHTML += `<p>You enraged ${target.name}. It has gotten stronger, and is now a category ${target.strength}.</p>`;
+      resultText += `<p>You enraged ${target.name}. It has gotten stronger, and is now a category ${target.strength}.</p>`;
     } else if (result === 5) {
-      elements.hurricaneBox.innerHTML += `<p>${target.name} shot back!!!</p>`;
+      resultText += `<p>${target.name} shot back!!!</p>`;
       lowerApprovalRating(1);
     } else {
       target.weaken();
       target.render();
       raiseApprovalRating(1);
-      elements.hurricaneBox.innerHTML += `<p>${target.name} was weakened to a category ${target.strength}</p>`;
+      resultText += `<p>${target.name} was weakened to a category ${target.strength}</p>`;
     }
 
     // Category 3 & 4
@@ -429,15 +472,15 @@ function hurricaneHit(shooter, target) {
     if (result === 2) {
       target.strengthen();
       target.render();
-      elements.hurricaneBox.innerHTML += `<p>You enraged ${target.name}. It has gotten stronger, and is now a category ${target.strength}.</p>`;
+      resultText += `<p>You enraged ${target.name}. It has gotten stronger, and is now a category ${target.strength}.</p>`;
     } else if (result === 1) {
-      elements.hurricaneBox.innerHTML += `<p>${target.name} shot back!!!</p>`;
+      resultText += `<p>${target.name} shot back!!!</p>`;
       lowerApprovalRating(1);
     } else {
       target.weaken();
       target.render();
       raiseApprovalRating(1);
-      elements.hurricaneBox.innerHTML += `<p>${target.name} was weakened to a category ${target.strength}</p>`;
+      resultText += `<p>${target.name} was weakened to a category ${target.strength}</p>`;
     }
   }
 
@@ -447,17 +490,18 @@ function hurricaneHit(shooter, target) {
     if (result === 2) {
       target.strengthen(true);
       target.render();
-      elements.hurricaneBox.innerHTML += `<p>You enraged ${target.name}. It has gotten stronger, and is now a category ${target.strength}.</p>`;
+      resultText += `<p>You enraged ${target.name}. It has gotten stronger, and is now a category ${target.strength}.</p>`;
     } else if (result === 1) {
-      elements.hurricaneBox.innerHTML += `<p>${target.name} shot back!!!</p>`;
+      resultText += `<p>${target.name} shot back!!!</p>`;
       lowerApprovalRating(1);
     } else {
       target.weaken();
       target.render();
       raiseApprovalRating(1);
-      elements.hurricaneBox.innerHTML += `<p>${target.name} was weakened to a category ${target.strength}</p>`;
+      resultText += `<p>${target.name} was weakened to a category ${target.strength}</p>`;
     }
   }
+  addToDialogueBox(resultText);
 }
 
 // APPROVAL RATING
@@ -465,19 +509,23 @@ function hurricaneHit(shooter, target) {
 // APPROVAL RATING
 
 function lowerApprovalRating(amount) {
-  utilities.approvalRating--;
-  elements.hurricaneBox.innerHTML += `Your approval rating has dropped ${amount} point${
-    amount > 1 ? "s" : ""
-  } to ${utilities.approvalRating}.`;
-  elements.approvalBar.setAttribute("value", utilities.approvalRating);
+  approvalRating--;
+  addToDialogueBox(
+    `Your approval rating has dropped ${amount} point${
+      amount > 1 ? "s" : ""
+    } to ${approvalRating}.`
+  );
+  elements.approvalBar.setAttribute("value", approvalRating);
 }
 
 function raiseApprovalRating(amount) {
-  utilities.approvalRating++;
-  elements.hurricaneBox.innerHTML += `Your approval rating has increased ${amount} point${
-    amount > 1 ? "s" : ""
-  } to ${utilities.approvalRating}.`;
-  elements.approvalBar.setAttribute("value", utilities.approvalRating);
+  approvalRating++;
+  addToDialogueBox(
+    `Your approval rating has increased ${amount} point${
+      amount > 1 ? "s" : ""
+    } to ${approvalRating}.`
+  );
+  elements.approvalBar.setAttribute("value", approvalRating);
 }
 
 function diagonal(x1, y1, x2, y2) {
