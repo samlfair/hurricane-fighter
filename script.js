@@ -1,93 +1,45 @@
-/*
-
-Notes from Franck:
-- use sprite sheet
-- Dont use fixed or absolute
-- Dont use setInterval
-
-*/
-
 // Imports
 
-import startingMap from "./map-1.js";
-
-// Basic Functions
-
-function randomNumber(min, max) {
-  let spread = max - min;
-  let number = Math.floor(Math.random() * (spread + 1)) + min;
-  return number;
-}
-
-function pythagorean(sideA, sideB) {
-  return Math.sqrt(Math.pow(sideA, 2) + Math.pow(sideB, 2));
-}
-
-// ELEMENTS
-
-// Grid
-let htmlGrid = document.getElementById("grid-container");
-
-// Progress Bars
-let approvalBar = document.getElementById("rating");
-let budgetBar = document.getElementById("budget");
-
-// Text boxes
-let introduction = document.getElementById("introduction");
-let choiceList = document.getElementById("city-choices");
-let shootingInstructions = document.getElementById("shooting-instructions");
-let hurricaneBox = document.getElementById("hurricane-click");
-
-// Buttons
-let startButton = document.querySelector("#introduction .enter");
-let choiceButton = document.querySelector("#city-choices .enter");
-let citySelectButton = document.querySelector("#shooting-instructions .enter");
-
-// Initial variables
-
-const listOfNames = ["Amanda", "Brian", "Caitlin", "Devon", "Elizabeth"];
-const hurricanes = [];
-
-const selected = {
-  itemOne: null,
-  itemTwo: null,
-  function: null,
-};
-
-let approvalRating = 5;
-let budget = 5000;
+import startingMap from "./scripts/map-1.js";
+import * as basics from "./scripts/utilities.js";
+import * as elements from "./scripts/elements.js";
+import * as utilities from "./scripts/utilities.js";
+// import { City, Hurricane } from "./scripts/factoryFunctions.js";
 
 // 1. Script
 
 // Introduction
 
-startButton.addEventListener("click", function () {
-  introduction.classList.add("hidden");
-  choiceList.classList.remove("hidden");
+elements.startButton.addEventListener("click", function () {
+  elements.introduction.classList.add("hidden");
+  elements.choiceList.classList.remove("hidden");
 });
 
 // Choice
 
-choiceButton.addEventListener("click", function () {
-  choiceList.classList.add("hidden");
-  shootingInstructions.classList.remove("hidden");
-  selected.function = shoot;
+elements.choiceButton.addEventListener("click", function () {
+  elements.choiceList.classList.add("hidden");
+  elements.shootingInstructions.classList.remove("hidden");
+  utilities.selected.function = shoot;
 });
 
 // Select City
 
-citySelectButton.addEventListener("click", function () {
-  shootingInstructions.classList.add("hidden");
-  hurricaneBox.classList.remove("hidden");
+elements.citySelectButton.addEventListener("click", function () {
+  elements.shootingInstructions.classList.add("hidden");
+  elements.hurricaneBox.classList.remove("hidden");
   setTimeout(function () {
     turnClick();
-    hurricaneBox.innerHTML = "<p>Click on a hurricane to shoot at it.</p>";
-    choiceList.classList.remove("hidden");
-    hurricaneBox.classList.add("hidden");
+    elements.hurricaneBox.innerHTML =
+      "<p>Click on a hurricane to shoot at it.</p>";
+    elements.choiceList.classList.remove("hidden");
+    elements.hurricaneBox.classList.add("hidden");
   }, 5000);
 });
 
-// 2. Render the HTML
+// RENDER MAP
+// RENDER MAP
+// RENDER MAP
 
 function renderDivGrid(array) {
   array.forEach(function (row, rowIndex) {
@@ -100,14 +52,16 @@ function renderDivGrid(array) {
 function createOneGridDiv(item, rowIndex, colIndex) {
   let div = document.createElement("div");
   div.className = item.startingClasses;
-  htmlGrid.appendChild(div);
+  elements.htmlGrid.appendChild(div);
   item.htmlNode = div;
   div.addEventListener("click", function () {
     squareClick(item);
   });
 }
 
-// 4. Create Hurricane
+// RENDER METHOD
+// RENDER METHOD
+// RENDER METHOD
 
 const renderer = (state) => ({
   render() {
@@ -117,47 +71,73 @@ const renderer = (state) => ({
       "row" + state.rowIndex
     );
     state.iconNode.innerHTML = state.icon;
-    switch (state.type) {
-      case "hurricane":
-        state.subtitle = `Category ${state.strength}`;
-        break;
-      case "city":
-        state.subtitle = `Ammo: ${state.ammo}`;
-        break;
-    }
-    state.subtitleNode.innerText = state.subtitle;
+    setSubtitle(state);
     return state;
   },
 });
 
-// MOVE
-// MOVE
-// MOVE
+const setSubtitle = (state) => {
+  switch (state.type) {
+    case "hurricane":
+      state.subtitle = `Category ${state.strength}`;
+      break;
+    case "city":
+      state.subtitle = `Ammo: ${state.ammo}`;
+      break;
+  }
+  state.subtitleNode.innerText = state.subtitle;
+};
+
+// MOVE METHOD
+// MOVE METHOD
+// MOVE METHOD
+
+function animateMovement(state, colChange, rowChange) {
+  state.htmlNode.classList.add("transition");
+  // Important! Remove class "transition" when movement ends.
+  let xUnit = document.querySelector(".land").offsetWidth;
+  let yUnit = document.querySelector(".land").offsetHeight;
+  let dx = colChange * xUnit;
+  let dy = rowChange * yUnit;
+  state.htmlNode.style.transform = `translate(${dx}px, ${dy}px)`;
+}
 
 const mover = (state) => ({
   move(xMinChange, xMaxChange, yMinChange, yMaxChange) {
-    let hurricaneInitial = JSON.parse(JSON.stringify(state));
-    var cols = randomNumber(xMinChange, xMaxChange);
-    var rows = randomNumber(yMinChange, yMaxChange);
-    state.colIndex += cols;
-    state.rowIndex += rows;
+    var colChange = basics.randomNumber(xMinChange, xMaxChange);
+    var rowChange = basics.randomNumber(yMinChange, yMaxChange);
+    var colInitial = state.colIndex;
+    var rowInitial = state.rowIndex;
+    var colFinal = colInitial + colChange;
+    colFinal < 1 ? (colFinal = 1) : null;
+    rowFinal < 1 ? (rowFinal = 1) : null;
+    var rowFinal = rowInitial + rowChange;
+    var floodCount = 0;
+
+    let traversion = diagonal(colInitial, rowInitial, colFinal, rowFinal);
+    traversion.shift;
+
+    traversion.forEach(function (square, index, array) {
+      if (square.col === 1 || square.row === 1) {
+        console.log("You've reached the edge of the map.");
+        array.splice(index + 1);
+        let lastSquare = traversion[traversion.length - 1];
+        colChange = lastSquare.col - colInitial;
+        rowChange = lastSquare.row - rowInitial;
+        colFinal = lastSquare.col;
+        rowFinal = lastSquare.row;
+        // SET THE LAST SQUARE
+      }
+    });
+
+    state.colIndex = colFinal;
+    state.rowIndex = rowFinal;
 
     // Animation
 
-    let xUnit = startingMap[0][0].htmlNode.offsetWidth;
-    let yUnit = startingMap[0][0].htmlNode.offsetHeight;
+    animateMovement(state, colChange, rowChange);
 
-    let dx = cols * xUnit;
-    let dy = rows * yUnit;
-
-    state.htmlNode.classList.add("transition");
-    state.htmlNode.style.transform = `translate(${dx}px, ${dy}px)`;
-
-    // Traversion
-
-    let traversion = diagonal(hurricaneInitial, state);
-    traversion.shift();
-    var floodCount = 0;
+    // Paint
 
     traversion.forEach(function (square, i) {
       setTimeout(function () {
@@ -178,41 +158,32 @@ const mover = (state) => ({
     // Move
 
     setTimeout(function () {
-      state.htmlNode.classList.remove(
-        "col" + hurricaneInitial.colIndex,
-        "row" + hurricaneInitial.rowIndex,
-        "transition"
-      );
+      state.htmlNode.classList.remove("col" + colInitial, "row" + rowInitial);
+      state.htmlNode.classList.remove("transition");
 
       state.htmlNode.style.transform = ``;
 
-      state.htmlNode.classList.add(
-        "col" + state.colIndex,
-        "row" + state.rowIndex
-      );
-      if (
-        state.colIndex < 1 ||
-        state.colIndex > 32 ||
-        state.rowIndex < 1 ||
-        state.rowIndex > 24
-      ) {
+      state.htmlNode.classList.add("col" + colFinal, "row" + rowFinal);
+      if (state.colIndex === 1 || state.rowIndex === 1) {
         console.log(`${state.name} disappeared.`);
         state.htmlNode.remove();
-        hurricanes.splice(
-          hurricanes.findIndex((object) => (object === state ? true : false)),
+        utilities.hurricanes.splice(
+          utilities.hurricanes.findIndex((object) =>
+            object === state ? true : false
+          ),
           1
         );
       }
     }, 3000);
 
-    // Approval Rating
-    setTimeout(function () {
-      console.log(`flood count: ${floodCount}`);
-      if (floodCount > 1) {
-        console.log(`${floodCount} squares of countryside were flooded.`);
-        lowerApprovalRating(Math.floor(floodCount / 2));
-      }
-    }, 3500);
+    // // Approval Rating
+    // setTimeout(function () {
+    //   console.log(`flood count: ${floodCount}`);
+    //   if (floodCount > 1) {
+    //     console.log(`${floodCount} squares of countryside were flooded.`);
+    //     lowerApprovalRating(Math.floor(floodCount / 2));
+    //   }
+    // }, 3500);
   },
 });
 
@@ -236,8 +207,10 @@ const weakener = (state) => ({
     if (state.strength <= 0) {
       console.log(`${state.name} died.`);
       state.htmlNode.remove();
-      hurricanes.splice(
-        hurricanes.findIndex((object) => (object === state ? true : false)),
+      utilities.hurricanes.splice(
+        utilities.hurricanes.findIndex((object) =>
+          object === state ? true : false
+        ),
         1
       );
     }
@@ -246,9 +219,9 @@ const weakener = (state) => ({
 
 function Hurricane() {
   let hurricane = {
-    name: "Hurricane " + listOfNames.shift(),
-    colIndex: randomNumber(19, 30),
-    rowIndex: randomNumber(16, 22),
+    name: "Hurricane " + basics.listOfNames.shift(),
+    colIndex: basics.randomNumber(19, 30),
+    rowIndex: basics.randomNumber(16, 22),
     strength: 2,
     htmlNode: document.createElement("div"),
     iconNode: document.createElement("span"),
@@ -279,7 +252,7 @@ function City(name, colIndex, rowIndex, iconUrl = "./images/city-1.png") {
     name: name,
     colIndex: colIndex,
     rowIndex: rowIndex,
-    ammo: randomNumber(2, 5),
+    ammo: basics.randomNumber(2, 5),
     htmlNode: document.createElement("div"),
     iconNode: document.createElement("span"),
     titleNode: document.createElement("h2"),
@@ -306,7 +279,7 @@ function htmlNodeConstructor(object) {
   object.htmlNode.appendChild(object.iconNode);
   object.htmlNode.appendChild(object.titleNode);
   object.htmlNode.appendChild(object.subtitleNode);
-  htmlGrid.appendChild(object.htmlNode);
+  elements.htmlGrid.appendChild(object.htmlNode);
 }
 
 // TURN CHANGE
@@ -316,14 +289,21 @@ function htmlNodeConstructor(object) {
 document.getElementById("turn").onclick = turnClick;
 
 function turnClick() {
-  hurricanes.forEach((hurricane, index, array) =>
+  console.log([...utilities.hurricanes]);
+  [...utilities.hurricanes].forEach((hurricane, index, array) =>
     hurricaneTurn(hurricane, index, array)
   );
-  if (randomNumber(0, 5) === 0 && hurricanes.length < 4) {
-    hurricanes.push(Hurricane());
+  if (basics.randomNumber(0, 5) === 0 && utilities.hurricanes.length < 4) {
+    let newHurricane = Hurricane();
+    utilities.hurricanes.push(newHurricane);
+    console.log(newHurricane);
+    newHurricane.render();
   }
-  if (hurricanes.length === 0) {
-    hurricanes.push(Hurricane());
+  if (utilities.hurricanes.length === 0) {
+    let newHurricane = Hurricane();
+    utilities.hurricanes.push(newHurricane);
+    console.log(newHurricane);
+    newHurricane.render();
   }
 }
 
@@ -338,7 +318,7 @@ function hurricaneTurn(hurricane, index, array) {
   if (startingMap[hurricane.rowIndex][hurricane.colIndex].type === "land") {
     hurricane.weaken();
   } else {
-    let rand = randomNumber(0, 5);
+    let rand = basics.randomNumber(0, 5);
     if (rand < 2) {
       hurricane.strengthen();
     }
@@ -360,7 +340,7 @@ function squareClick(object) {
 // INITIALIZE
 // INITIALIZE
 
-hurricanes.push(Hurricane().render());
+utilities.hurricanes.push(Hurricane().render());
 let newOrleans = City("New Orleans", 15, 8, "./images/city-1.png").render();
 let miami = City("Miami", 24, 12, "./images/city-1.png").render();
 let houston = City("Houston", 10, 10, "./images/city-1.png").render();
@@ -373,28 +353,21 @@ renderDivGrid(startingMap);
 // CHARACTER CLICKING
 // CHARACTER CLICKING
 
-const selectedCityText = document.querySelector(
-  "#shooting-instructions .selected-city"
-);
-const selectedCityButton = document.querySelector(
-  "#shooting-instructions .enter"
-);
-
 function cityClick(city) {
-  if (selected.itemOne) {
-    selected.itemOne.htmlNode.classList.remove("selected");
+  if (utilities.selected.itemOne) {
+    utilities.selected.itemOne.htmlNode.classList.remove("utilities.selected");
   }
-  selected.itemOne = city;
+  utilities.selected.itemOne = city;
   city.htmlNode.classList.add("selected");
-  selectedCityText.innerHTML = `<p>You have selected ${city.name}.</p>`;
+  elements.selectedCityText.innerHTML = `<p>You have selected ${city.name}.</p>`;
 }
 
 function hurricaneClick(hurricane) {
-  if (selected.itemOne.type === "hurricane") {
-    selected.itemOne = hurricane;
-  } else if (selected.itemOne.type === "city") {
-    selected.itemTwo = hurricane;
-    shoot(selected.itemOne, selected.itemTwo, 1);
+  if (utilities.selected.itemOne.type === "hurricane") {
+    utilities.selected.itemOne = hurricane;
+  } else if (utilities.selected.itemOne.type === "city") {
+    utilities.selected.itemTwo = hurricane;
+    shoot(utilities.selected.itemOne, utilities.selected.itemTwo, 1);
   }
 }
 
@@ -408,7 +381,7 @@ function shoot(shooter, target) {
     let hit = null;
     let deltaX = shooter.colIndex - target.colIndex;
     let deltaY = shooter.rowIndex - target.rowIndex;
-    let distance = Math.round(pythagorean(deltaX, deltaY));
+    let distance = Math.round(basics.pythagorean(deltaX, deltaY));
 
     // subtract from ammo
     if (shooter.type === "city") {
@@ -418,71 +391,71 @@ function shoot(shooter, target) {
 
     // determine hit
     if (distance < 6) {
-      hit = !!randomNumber(0, 2);
+      hit = !!basics.randomNumber(0, 2);
     } else {
-      hit = !randomNumber(0, Math.round(distance / 3));
+      hit = !basics.randomNumber(0, Math.round(distance / 3));
     }
     hit && target.type === "hurricane"
       ? hurricaneHit(shooter, target)
-      : (hurricaneBox.innerHTML = `<p>Distance is ${distance}. It's a miss!</p>`);
+      : (elements.hurricaneBox.innerHTML = `<p>Distance is ${distance}. It's a miss!</p>`);
   } else {
-    hurricaneBox.innerHTML = "You're out of ammo!";
+    elements.hurricaneBox.innerHTML = "You're out of ammo!";
   }
 }
 
 function hurricaneHit(shooter, target) {
-  hurricaneBox.innerHTML = `<p>${shooter.name} hit ${target.name}!</p>`;
+  elements.hurricaneBox.innerHTML = `<p>${shooter.name} hit ${target.name}!</p>`;
 
   // Category 1 + 2
   if (target.strength < 3) {
-    let result = randomNumber(0, 5);
+    let result = basics.randomNumber(0, 5);
     if (result === 4) {
       target.strengthen();
       target.render();
-      hurricaneBox.innerHTML += `<p>You enraged ${target.name}. It has gotten stronger, and is now a category ${target.strength}.</p>`;
+      elements.hurricaneBox.innerHTML += `<p>You enraged ${target.name}. It has gotten stronger, and is now a category ${target.strength}.</p>`;
     } else if (result === 5) {
-      hurricaneBox.innerHTML += `<p>${target.name} shot back!!!</p>`;
+      elements.hurricaneBox.innerHTML += `<p>${target.name} shot back!!!</p>`;
       lowerApprovalRating(1);
     } else {
       target.weaken();
       target.render();
       raiseApprovalRating(1);
-      hurricaneBox.innerHTML += `<p>${target.name} was weakened to a category ${target.strength}</p>`;
+      elements.hurricaneBox.innerHTML += `<p>${target.name} was weakened to a category ${target.strength}</p>`;
     }
 
     // Category 3 & 4
   } else if (target.strength > 2 && target.strength < 5) {
-    let result = randomNumber(0, 2);
+    let result = basics.randomNumber(0, 2);
     if (result === 2) {
       target.strengthen();
       target.render();
-      hurricaneBox.innerHTML += `<p>You enraged ${target.name}. It has gotten stronger, and is now a category ${target.strength}.</p>`;
+      elements.hurricaneBox.innerHTML += `<p>You enraged ${target.name}. It has gotten stronger, and is now a category ${target.strength}.</p>`;
     } else if (result === 1) {
-      hurricaneBox.innerHTML += `<p>${target.name} shot back!!!</p>`;
+      elements.hurricaneBox.innerHTML += `<p>${target.name} shot back!!!</p>`;
       lowerApprovalRating(1);
     } else {
       target.weaken();
       target.render();
       raiseApprovalRating(1);
-      hurricaneBox.innerHTML += `<p>${target.name} was weakened to a category ${target.strength}</p>`;
+      elements.hurricaneBox.innerHTML += `<p>${target.name} was weakened to a category ${target.strength}</p>`;
     }
   }
 
   // Category 5 & 6
   else {
-    let result = randomNumber(0, 2);
+    let result = basics.randomNumber(0, 2);
     if (result === 2) {
       target.strengthen(true);
       target.render();
-      hurricaneBox.innerHTML += `<p>You enraged ${target.name}. It has gotten stronger, and is now a category ${target.strength}.</p>`;
+      elements.hurricaneBox.innerHTML += `<p>You enraged ${target.name}. It has gotten stronger, and is now a category ${target.strength}.</p>`;
     } else if (result === 1) {
-      hurricaneBox.innerHTML += `<p>${target.name} shot back!!!</p>`;
+      elements.hurricaneBox.innerHTML += `<p>${target.name} shot back!!!</p>`;
       lowerApprovalRating(1);
     } else {
       target.weaken();
       target.render();
       raiseApprovalRating(1);
-      hurricaneBox.innerHTML += `<p>${target.name} was weakened to a category ${target.strength}</p>`;
+      elements.hurricaneBox.innerHTML += `<p>${target.name} was weakened to a category ${target.strength}</p>`;
     }
   }
 }
@@ -492,69 +465,26 @@ function hurricaneHit(shooter, target) {
 // APPROVAL RATING
 
 function lowerApprovalRating(amount) {
-  approvalRating--;
-  hurricaneBox.innerHTML += `Your approval rating has dropped ${amount} point${
+  utilities.approvalRating--;
+  elements.hurricaneBox.innerHTML += `Your approval rating has dropped ${amount} point${
     amount > 1 ? "s" : ""
-  } to ${approvalRating}.`;
-  approvalBar.setAttribute("value", approvalRating);
+  } to ${utilities.approvalRating}.`;
+  elements.approvalBar.setAttribute("value", utilities.approvalRating);
 }
 
 function raiseApprovalRating(amount) {
-  approvalRating++;
-  hurricaneBox.innerHTML += `Your approval rating has increased ${amount} point${
+  utilities.approvalRating++;
+  elements.hurricaneBox.innerHTML += `Your approval rating has increased ${amount} point${
     amount > 1 ? "s" : ""
-  } to ${approvalRating}.`;
-  approvalBar.setAttribute("value", approvalRating);
+  } to ${utilities.approvalRating}.`;
+  elements.approvalBar.setAttribute("value", utilities.approvalRating);
 }
 
-// LANDFALL
-// LANDFALL
-// LANDFALL
-
-let dallasToMiami = diagonal(dallas, miami);
-
-// BRESENHAM
-// BRESENHAM
-// BRESENHAM
-
-function diagonal(obj1, obj2) {
-  const coordinatesArray = bresenham(
-    obj1.colIndex,
-    obj1.rowIndex,
-    obj2.colIndex,
-    obj2.rowIndex
-  );
+function diagonal(x1, y1, x2, y2) {
+  const coordinatesArray = utilities.bresenham(x1, y1, x2, y2);
   const mapSquares = [];
   coordinatesArray.forEach(function (coordinate) {
     mapSquares.push(startingMap[coordinate[0] - 1][coordinate[1] - 1]);
   });
   return mapSquares;
-}
-
-function bresenham(x1, y1, x2, y2) {
-  const coordinatesArray = [];
-  // Define differences and error check
-  let dx = Math.abs(x2 - x1);
-  let dy = Math.abs(y2 - y1);
-  let sx = x1 < x2 ? 1 : -1;
-  let sy = y1 < y2 ? 1 : -1;
-  let err = dx - dy;
-  // Set first coordinates
-  coordinatesArray.push([y1, x1]);
-  // Main loop
-  while (!(x1 == x2 && y1 == y2)) {
-    let e2 = err << 1;
-    if (e2 > -dy) {
-      err -= dy;
-      x1 += sx;
-    }
-    if (e2 < dx) {
-      err += dx;
-      y1 += sy;
-    }
-    // Set coordinates
-    coordinatesArray.push([y1, x1]);
-  }
-  // Return the result
-  return coordinatesArray;
 }
