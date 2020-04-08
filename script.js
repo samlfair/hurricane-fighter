@@ -6,11 +6,6 @@ import * as elements from "./scripts/elements.js";
 import * as utilities from "./scripts/utilities.js";
 // import { City, Hurricane } from "./scripts/factoryFunctions.js";
 
-document.getElementById("anon").addEventListener("click", function () {
-  clearDialogueBox();
-  turnClick();
-});
-
 function nextTurn() {
   clearDialogueBox();
   turnClick();
@@ -127,9 +122,9 @@ const setSubtitle = (state) => {
   state.subtitleNode.innerText = state.subtitle;
 };
 
-// MOVE METHOD
-// MOVE METHOD
-// MOVE METHOD
+// MOVE
+// MOVE
+// MOVE
 
 function animateMovement(state, colChange, rowChange) {
   state.htmlNode.classList.add("transition");
@@ -185,7 +180,9 @@ const mover = (state) => ({
             );
             lowerApprovalRating(3);
           } else {
-            floodCount++;
+            if (!square.country && square.row < 13) {
+              floodCount++;
+            }
           }
           square.htmlNode.classList.add("flooded");
         }
@@ -323,7 +320,7 @@ function htmlNodeConstructor(object) {
 // TURN CHANGE
 // TURN CHANGE
 
-document.getElementById("turn").onclick = turnClick;
+console.log(startingMap);
 
 function turnClick() {
   console.log([...utilities.hurricanes]);

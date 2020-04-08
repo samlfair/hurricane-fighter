@@ -605,6 +605,21 @@ const startingMap = [
       row: 3,
       col: 20,
       htmlNode: {},
+      feature: {
+        city: {
+          name: "Atlanta",
+          colIndex: 20,
+          rowIndex: 3,
+          ammo: 2,
+          htmlNode: {},
+          iconNode: {},
+          titleNode: {},
+          subtitleNode: {},
+          type: "city",
+          icon: '<img src="./images/city-1.png"></img>',
+          subtitle: "Ammo: 2",
+        },
+      },
     },
     {
       type: "land",
@@ -754,6 +769,21 @@ const startingMap = [
       row: 4,
       col: 8,
       htmlNode: {},
+      feature: {
+        city: {
+          name: "Dallas",
+          colIndex: 8,
+          rowIndex: 4,
+          ammo: 3,
+          htmlNode: {},
+          iconNode: {},
+          titleNode: {},
+          subtitleNode: {},
+          type: "city",
+          icon: '<img src="./images/city-1.png"></img>',
+          subtitle: "Ammo: 3",
+        },
+      },
     },
     {
       type: "land",
@@ -1404,6 +1434,7 @@ const startingMap = [
       row: 7,
       col: 1,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -1637,6 +1668,7 @@ const startingMap = [
       row: 8,
       col: 1,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -1644,6 +1676,7 @@ const startingMap = [
       row: 8,
       col: 2,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -1735,6 +1768,21 @@ const startingMap = [
       row: 8,
       col: 15,
       htmlNode: {},
+      feature: {
+        city: {
+          name: "New Orleans",
+          colIndex: 15,
+          rowIndex: 8,
+          ammo: 5,
+          htmlNode: {},
+          iconNode: {},
+          titleNode: {},
+          subtitleNode: {},
+          type: "city",
+          icon: '<img src="./images/city-1.png"></img>',
+          subtitle: "Ammo: 5",
+        },
+      },
     },
     {
       type: "ocean",
@@ -1870,6 +1918,7 @@ const startingMap = [
       row: 9,
       col: 1,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -1877,6 +1926,7 @@ const startingMap = [
       row: 9,
       col: 2,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -1884,6 +1934,7 @@ const startingMap = [
       row: 9,
       col: 3,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -1898,6 +1949,7 @@ const startingMap = [
       row: 9,
       col: 5,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -1905,6 +1957,7 @@ const startingMap = [
       row: 9,
       col: 6,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -2103,6 +2156,7 @@ const startingMap = [
       row: 10,
       col: 1,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -2110,6 +2164,7 @@ const startingMap = [
       row: 10,
       col: 2,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -2117,6 +2172,7 @@ const startingMap = [
       row: 10,
       col: 3,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -2124,6 +2180,7 @@ const startingMap = [
       row: 10,
       col: 4,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -2131,6 +2188,7 @@ const startingMap = [
       row: 10,
       col: 5,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -2138,6 +2196,7 @@ const startingMap = [
       row: 10,
       col: 6,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -2166,6 +2225,21 @@ const startingMap = [
       row: 10,
       col: 10,
       htmlNode: {},
+      feature: {
+        city: {
+          name: "Houston",
+          colIndex: 10,
+          rowIndex: 10,
+          ammo: 2,
+          htmlNode: {},
+          iconNode: {},
+          titleNode: {},
+          subtitleNode: {},
+          type: "city",
+          icon: '<img src="./images/city-1.png"></img>',
+          subtitle: "Ammo: 2",
+        },
+      },
     },
     {
       type: "ocean",
@@ -2336,6 +2410,7 @@ const startingMap = [
       row: 11,
       col: 1,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -2343,6 +2418,7 @@ const startingMap = [
       row: 11,
       col: 2,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -2350,6 +2426,7 @@ const startingMap = [
       row: 11,
       col: 3,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -2357,6 +2434,7 @@ const startingMap = [
       row: 11,
       col: 4,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -2364,6 +2442,7 @@ const startingMap = [
       row: 11,
       col: 5,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -2371,6 +2450,7 @@ const startingMap = [
       row: 11,
       col: 6,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -2378,6 +2458,7 @@ const startingMap = [
       row: 11,
       col: 7,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -2569,6 +2650,7 @@ const startingMap = [
       row: 12,
       col: 1,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -2576,6 +2658,7 @@ const startingMap = [
       row: 12,
       col: 2,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -2583,6 +2666,7 @@ const startingMap = [
       row: 12,
       col: 3,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -2590,6 +2674,7 @@ const startingMap = [
       row: 12,
       col: 4,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -2597,6 +2682,7 @@ const startingMap = [
       row: 12,
       col: 5,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -2604,6 +2690,7 @@ const startingMap = [
       row: 12,
       col: 6,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -2611,6 +2698,7 @@ const startingMap = [
       row: 12,
       col: 7,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -2618,6 +2706,7 @@ const startingMap = [
       row: 12,
       col: 8,
       htmlNode: {},
+      country: "Mexico",
     },
     {
       type: "land",
@@ -2730,6 +2819,21 @@ const startingMap = [
       row: 12,
       col: 24,
       htmlNode: {},
+      feature: {
+        city: {
+          name: "Miami",
+          colIndex: 24,
+          rowIndex: 12,
+          ammo: 2,
+          htmlNode: {},
+          iconNode: {},
+          titleNode: {},
+          subtitleNode: {},
+          type: "city",
+          icon: '<img src="./images/city-1.png"></img>',
+          subtitle: "Ammo: 2",
+        },
+      },
     },
     {
       type: "ocean",
@@ -5827,5 +5931,4 @@ const startingMap = [
     },
   ],
 ];
-
 export default startingMap;
