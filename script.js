@@ -87,35 +87,23 @@ citySelectButton.addEventListener("click", function () {
   }, 5000);
 });
 
-// Select hurricane
-
-/*
-
-Click on a hurricane to shoot at it.
-
-Dialog box with result.
-
-What would you like to do next?
-
-Create a dialog box and print "Console.logs" to it.
-
-*/
-
 // 2. Render the HTML
 
 function renderDivGrid(array) {
   array.forEach(function (row, rowIndex) {
     row.forEach(function (item, colIndex) {
-      let div = document.createElement("div");
-      div.className = item.startingClasses;
-      div.setAttribute("data-row-index", rowIndex);
-      div.setAttribute("data-col-index", colIndex);
-      htmlGrid.appendChild(div);
-      item.htmlNode = div;
-      div.addEventListener("click", function () {
-        squareClick(item);
-      });
+      createOneGridDiv(item, rowIndex, colIndex);
     });
+  });
+}
+
+function createOneGridDiv(item, rowIndex, colIndex) {
+  let div = document.createElement("div");
+  div.className = item.startingClasses;
+  htmlGrid.appendChild(div);
+  item.htmlNode = div;
+  div.addEventListener("click", function () {
+    squareClick(item);
   });
 }
 
@@ -256,12 +244,6 @@ const weakener = (state) => ({
   },
 });
 
-const clicker = (state) => ({
-  click() {
-    console.log("click");
-  },
-});
-
 function Hurricane() {
   let hurricane = {
     name: "Hurricane " + listOfNames.shift(),
@@ -288,7 +270,6 @@ function Hurricane() {
     strengthener(hurricane),
     weakener(hurricane),
     renderer(hurricane),
-    clicker(hurricane),
     shooter(hurricane)
   );
 }
@@ -315,7 +296,7 @@ function City(name, colIndex, rowIndex, iconUrl = "./images/city-1.png") {
   });
   startingMap[rowIndex - 1][colIndex - 1].feature = { city: city };
 
-  return Object.assign(city, renderer(city), clicker(city), shooter(city));
+  return Object.assign(city, renderer(city), shooter(city));
 }
 
 function htmlNodeConstructor(object) {
