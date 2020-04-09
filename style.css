@@ -6,6 +6,8 @@
   --coastline-color: green;
   --coastline-radius: 5px;
   --shadow-distance: 2px;
+  --groove-border-color: lightgrey;
+  --container-color: silver;
 }
 
 /* add border width variable */
@@ -20,19 +22,22 @@
 /* Universals */
 
 body {
-  margin: 0;
+  margin: 15px;
   background: white;
   font-family: "Press Start 2p", monospace;
 }
 
 #container {
   margin: 0 auto;
-  padding: 20px;
+  padding: 5px;
+  padding-bottom: 20px;
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
   align-content: stretch;
   max-width: 840px;
+  background: var(--container-color);
+  border: 5px outset var(--groove-border-color);
 }
 
 /* Pixelated Border */
@@ -59,7 +64,7 @@ progress {
   background-repeat: repeat;
   background-position: center;
   background-size: auto;
-  border: 6px inset lightgrey;
+  border: 6px inset var(--groove-border-color);
   overflow: hidden;
 }
 
@@ -144,7 +149,7 @@ progress {
 }
 
 #purchase-box .row:hover {
-  color: yellow;
+  color: orange;
 }
 
 #purchase-box p:first-child {
@@ -159,7 +164,7 @@ progress {
   flex-grow: 1;
   border-bottom: 3px dotted;
   justify-self: flex-start;
-  height: 0.97em;
+  height: 0.4em;
 }
 
 #grid-container .button-box {
@@ -359,10 +364,10 @@ button:hover {
 /*           */
 
 #stats {
-  background: white;
+  background: var(--container-color);
   min-height: 20px;
   width: 100%;
-  padding: 20px 5px 0 5px;
+  padding: 20px 15px 0 15px;
   display: flex;
   justify-content: space-between;
 }
