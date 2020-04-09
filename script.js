@@ -352,6 +352,9 @@ const mover = (state) => ({
           1
         );
       }
+      if (utilities.hurricanes.length === 0) {
+        utilities.hurricanes.push(Hurricane().render());
+      }
     }, 3000);
 
     // Approval Rating
@@ -388,7 +391,7 @@ const weakener = (state) => ({
     if (utilities.hurricanes.length === 0) {
       utilities.hurricanes.push(Hurricane().render());
     }
-    if (utilities.hurricanes.length === 0 && listOfNames.length === 0) {
+    if (utilities.hurricanes.length === 0 && listOfNames.length < 25) {
       winGame();
     }
   },
@@ -466,11 +469,11 @@ function turnClick() {
   [...utilities.hurricanes].forEach((hurricane, index, array) =>
     hurricaneTurn(hurricane, index, array)
   );
-  if (utilities.randomNumber(0, 5) === 0 && utilities.hurricanes.length < 4) {
-    let newHurricane = Hurricane();
-    utilities.hurricanes.push(newHurricane);
-    newHurricane.render();
-  }
+  // if (utilities.randomNumber(0, 5) === 0 && utilities.hurricanes.length < 4) {
+  //   let newHurricane = Hurricane();
+  //   utilities.hurricanes.push(newHurricane);
+  //   newHurricane.render();
+  // }
   if (utilities.hurricanes.length === 0) {
     let newHurricane = Hurricane();
     utilities.hurricanes.push(newHurricane);
@@ -712,7 +715,7 @@ function raiseApprovalRating(amount) {
   approvalRating += amount;
   addToDialogueBox(
     `Your approval rating has increased ${amount} point${
-      amount > 1 ? "s" : ""
+      amount === 1 ? "s" : ""
     } to ${approvalRating}.`
   );
   elements.approvalBar.setAttribute("value", approvalRating);
