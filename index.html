@@ -18,7 +18,7 @@
   <body>
     <div id="container">
       <div id="grid-container">
-        <div class="title-card-visible">Loading...</div>
+        <div class="title-card-visible"><p>Loading...</p></div>
         <div class="button-box border">
           <!-- 1. INTRODUCTION -->
           <div id="introduction">
@@ -86,23 +86,33 @@
           <!-- END SCRIPT -->
         </div>
         <div id="cash-button">$</div>
+        <div id="end-game" class="border hidden">
+          <p>You lost.</p>
+          <button>Play Again</button>
+        </div>
       </div>
       <div id="stats">
-        <div class="nes-container is-rounded">
+        <div class="stat">
           <h2>Rating</h2>
-          <progress
-            class="nes-progress is-primary"
-            id="rating"
-            value="6"
-            max="10"
-          ></progress>
+          <div class="progress">
+            <progress
+              class="nes-progress is-primary"
+              id="rating"
+              value="6"
+              max="10"
+            ></progress>
+          </div>
+        </div>
+        <div class="stat">
           <h2>Budget</h2>
-          <progress
-            class="nes-progress is-warning"
-            id="budget"
-            value="5000"
-            max="10000"
-          ></progress>
+          <div class="progress">
+            <progress
+              class="nes-progress is-warning"
+              id="budget"
+              value="5000"
+              max="10000"
+            ></progress>
+          </div>
         </div>
       </div>
     </div>

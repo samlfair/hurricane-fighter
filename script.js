@@ -19,7 +19,13 @@ setTimeout(function () {
 }, 3000);
 
 function gameOver(reason) {
-  console.log("You lose!");
+  gameState = "over";
+  clearDialogueBox();
+  elements.endGame.classList.remove("hidden");
+  elements.endGameText.innerText = reason;
+  elements.playAgain.addEventListener("click", function () {
+    window.location.reload(true);
+  });
 }
 
 function winGame() {
@@ -162,7 +168,7 @@ function lowerBudget(amount) {
     console.log("Budget is low");
     budget = 0;
     console.log(budget);
-    renderDialogueBox(
+    gameOver(
       "You ran out of money! Congress is enraged, and your party has turned on you. Sad!"
     );
   }
@@ -396,8 +402,6 @@ const weakener = (state) => ({
         ),
         1
       );
-      console.log("Weakened array:");
-      console.log(utilities.hurricanes);
     }
     if (utilities.hurricanes.length === 0 && listOfNames.length === 0) {
       winGame();
@@ -509,6 +513,10 @@ function hurricaneTurn(hurricane, index, array) {
   setTimeout(function () {
     if (startingMap[hurricane.rowIndex][hurricane.colIndex].type === "land") {
       hurricane.weaken();
+      if (utilities.hurricanes.length === 0) {
+        console.log(utilities.hurricanes);
+        utilities.hurricanes.push(Hurricane());
+      }
     } else {
       let rand = utilities.randomNumber(0, 5);
       if (rand < 2) {
@@ -702,6 +710,9 @@ function hurricaneHit(shooter, target) {
 
 function lowerApprovalRating(amount) {
   approvalRating--;
+  if (approvalRating <= 0) {
+    gameOver("Your approval rating dropped too low!");
+  }
   addToDialogueBox(
     `Your approval rating has dropped ${amount} point${
       amount > 1 ? "s" : ""

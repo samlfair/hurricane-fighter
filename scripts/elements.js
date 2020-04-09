@@ -24,6 +24,9 @@ let ammoInstrux = document.getElementById("ammo-instrux");
 let wallInstrux = document.getElementById("wall-instrux");
 let cancelAmmoPurchase = ammoInstrux.querySelector("button");
 let cancelWallPurchase = wallInstrux.querySelector("button");
+let endGame = document.getElementById("end-game");
+let endGameText = endGame.querySelector("p");
+let playAgain = endGame.querySelector("button");
 
 // Buttons
 
@@ -49,4 +52,7 @@ export {
   wallInstrux,
   cancelAmmoPurchase,
   cancelWallPurchase,
+  endGame,
+  endGameText,
+  playAgain,
 };

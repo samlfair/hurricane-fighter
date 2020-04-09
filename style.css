@@ -37,7 +37,8 @@ body {
 
 /* Pixelated Border */
 
-.border {
+.border,
+progress {
   box-shadow: 4px 0px 0px 0px white, -4px 0px 0px 0px white,
     0px 4px 0px 0px white, 0px -4px 0px 0px white, 0px 0px 0px 4px black,
     0px 8px 0px 0px black, 0px -8px 0px 0px black, 8px 0px 0px 0px black,
@@ -80,9 +81,33 @@ body {
   justify-content: center;
 }
 
+.title-card-visible p {
+  padding-top: 60px;
+}
+
 .title-card-hidden {
   display: none;
   z-index: -100;
+}
+
+/* Game Over */
+
+#end-game {
+  grid-column-start: 2;
+  grid-column-end: 33;
+  grid-row-start: 2;
+  grid-row-end: 25;
+  background: white;
+  z-index: 10;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin: 10%;
+  padding: 5%;
+  text-align: center;
 }
 
 /* Overlay */
@@ -192,7 +217,7 @@ button:hover {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 /* Features */
@@ -337,11 +362,53 @@ button:hover {
   background: white;
   min-height: 20px;
   width: 100%;
-  padding-top: 20px;
+  padding: 20px 5px 0 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+#stats h2 {
+  display: inline;
+  font-size: 1em;
+  display: flex;
+  margin-right: 10px;
+}
+
+.stat {
+  display: flex;
+  flex-basis: 48%;
+  align-items: center;
+}
+
+.progress {
+  flex: 1;
+  margin: 10px;
 }
 
 progress {
-  border: 2px solid black;
+  border: none;
+  color: yellow;
+  background-color: white;
+  -webkit-appearance: none;
+  height: 25px;
+  width: 100%;
+}
+
+progress[value]::-webkit-progress-bar {
+  background-color: white;
+  padding: 4px;
+}
+
+progress::-webkit-progress-value {
+  background-color: blue;
+  box-shadow: -2px 0px 0px 0px blue, 0px 2px 0px 0px blue, 0px -2px 0px 0px blue;
+}
+
+progress#rating[value="10"]::-webkit-progress-value,
+progress#budget[value="10000"]::-webkit-progress-value {
+  background-color: chartreuse;
+  box-shadow: -2px 0px 0px 0px chartreuse, 0px 2px 0px 0px chartreuse,
+    0px -2px 0px 0px chartreuse, 2px 0px 0px 0px chartreuse;
 }
 
 /*                         */
