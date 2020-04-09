@@ -1,11 +1,4 @@
-export {
-  randomNumber,
-  pythagorean,
-  bresenham,
-  listOfNames,
-  hurricanes,
-  selected,
-};
+export { random, pythagorean, bresenham, listOfNames, hurricanes, selected };
 
 // Arrays
 
@@ -21,7 +14,7 @@ const selected = {
 
 // Functions
 
-function randomNumber(min, max) {
+function random(min, max) {
   let spread = max - min;
   let number = Math.floor(Math.random() * (spread + 1)) + min;
   return number;
@@ -500,12 +493,12 @@ const girlsNames = [
 
 const names = () => {
   let array = [];
-  let gender = !randomNumber(0, 1);
+  let gender = !random(0, 1);
   for (let i = 0; i < 26; i++) {
     if (gender) {
-      array.push(boysNames[i][randomNumber(0, boysNames[i].length - 1)]);
+      array.push(boysNames[i][random(0, boysNames[i].length - 1)]);
     } else {
-      array.push(girlsNames[i][randomNumber(0, girlsNames[i].length - 1)]);
+      array.push(girlsNames[i][random(0, girlsNames[i].length - 1)]);
     }
     gender = !gender;
   }

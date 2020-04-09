@@ -2,7 +2,7 @@
 
 import startingMap from "./scripts/map-1.js";
 import * as elements from "./scripts/elements.js";
-import * as utilities from "./scripts/utilities.js";
+import * as util from "./scripts/utilities.js";
 // import { City, Hurricane } from "./scripts/factoryFunctions.js";
 
 // Global Variables
@@ -44,21 +44,10 @@ function proceed() {
   }
 }
 
-function gameStatePurchasing() {
-  gameState = "purchasing";
-}
-
-function gameStateShooting() {
-  gameState = "shooting";
-}
-
-function gameStateInstruction() {
-  gameState = "instruction";
-}
-
-function gameStateStorm() {
-  gameState = "storm";
-}
+const gameStatePurchasing = () => (gameState = "purchasing");
+const gameStateShooting = () => (gameState = "shooting");
+const gameStateInstruction = () => (gameState = "instruction");
+const gameStateStorm = () => (gameState = "storm");
 
 // gameState = "instruction", "shooting", "storm", "purchasing"
 
@@ -261,8 +250,8 @@ function animateMovement(state, colChange, rowChange) {
 
 const mover = (state) => ({
   move(xMinChange, xMaxChange, yMinChange, yMaxChange) {
-    var colChange = utilities.randomNumber(xMinChange, xMaxChange);
-    var rowChange = utilities.randomNumber(yMinChange, yMaxChange);
+    var colChange = util.random(xMinChange, xMaxChange);
+    var rowChange = util.random(yMinChange, yMaxChange);
     var colInitial = state.colIndex;
     var rowInitial = state.rowIndex;
     var colFinal = colInitial + colChange;
@@ -348,15 +337,15 @@ const mover = (state) => ({
       if (state.colIndex === 1 || state.rowIndex === 1) {
         addToDialogueBox(`${state.name} disappeared.`);
         state.htmlNode.remove();
-        utilities.hurricanes.splice(
-          utilities.hurricanes.findIndex((object) =>
+        util.hurricanes.splice(
+          util.hurricanes.findIndex((object) =>
             object === state ? true : false
           ),
           1
         );
       }
-      if (utilities.hurricanes.length === 0) {
-        utilities.hurricanes.push(Hurricane().render());
+      if (util.hurricanes.length === 0) {
+        util.hurricanes.push(Hurricane().render());
       }
     }, 3000);
 
@@ -381,7 +370,7 @@ const strengthener = (state) => ({
 
 const weakener = (state) => ({
   weaken() {
-    if (utilities.hurricanes.length === 0 && listOfNames.length === 0) {
+    if (util.hurricanes.length === 0 && util.hurricanes.length === 0) {
       endGame(
         true,
         "You survived hurricane season and kept your approval rating high! You win another four years in office."
@@ -393,24 +382,24 @@ const weakener = (state) => ({
     if (state.strength <= 0) {
       addToDialogueBox(`${state.name} died.`);
       state.htmlNode.remove();
-      utilities.hurricanes.splice(
-        utilities.hurricanes.findIndex((object) =>
+      util.hurricanes.splice(
+        util.hurricanes.findIndex((object) =>
           object === state ? true : false
         ),
         1
       );
     }
-    if (utilities.hurricanes.length === 0) {
-      utilities.hurricanes.push(Hurricane().render());
+    if (util.hurricanes.length === 0) {
+      util.hurricanes.push(Hurricane().render());
     }
   },
 });
 
 function Hurricane() {
   let hurricane = {
-    name: "Hurricane " + utilities.listOfNames.shift(),
-    colIndex: utilities.randomNumber(19, 30),
-    rowIndex: utilities.randomNumber(16, 22),
+    name: "Hurricane " + util.listOfNames.shift(),
+    colIndex: util.random(19, 30),
+    rowIndex: util.random(16, 22),
     strength: 2,
     htmlNode: document.createElement("div"),
     iconNode: document.createElement("span"),
@@ -440,7 +429,7 @@ function City(name, colIndex, rowIndex, iconUrl = "./images/city-1.png") {
     name: name,
     colIndex: colIndex,
     rowIndex: rowIndex,
-    ammo: utilities.randomNumber(2, 5),
+    ammo: util.random(2, 5),
     htmlNode: document.createElement("div"),
     iconNode: document.createElement("span"),
     titleNode: document.createElement("h2"),
@@ -475,17 +464,17 @@ function htmlNodeConstructor(object) {
 // TURN CHANGE
 
 function turnClick() {
-  [...utilities.hurricanes].forEach((hurricane, index, array) =>
+  [...util.hurricanes].forEach((hurricane, index, array) =>
     hurricaneTurn(hurricane, index, array)
   );
-  if (utilities.randomNumber(0, 5) === 0 && utilities.hurricanes.length < 3) {
+  if (util.random(0, 5) === 0 && util.hurricanes.length < 3) {
     let newHurricane = Hurricane();
-    utilities.hurricanes.push(newHurricane);
+    util.hurricanes.push(newHurricane);
     newHurricane.render();
   }
-  if (utilities.hurricanes.length === 0) {
+  if (util.hurricanes.length === 0) {
     let newHurricane = Hurricane();
-    utilities.hurricanes.push(newHurricane);
+    util.hurricanes.push(newHurricane);
     newHurricane.render();
   }
 }
@@ -508,10 +497,10 @@ function hurricaneTurn(hurricane, index, array) {
   setTimeout(function () {
     if (startingMap[hurricane.rowIndex][hurricane.colIndex].type === "land") {
       hurricane.weaken();
-      if (utilities.hurricanes.length === 0) {
+      if (util.hurricanes.length === 0) {
       }
     } else {
-      let rand = utilities.randomNumber(0, 5);
+      let rand = util.random(0, 5);
       if (rand < 2) {
         hurricane.strengthen();
       }
@@ -547,7 +536,7 @@ function squareClick(object) {
 // INITIALIZE
 // INITIALIZE
 
-utilities.hurricanes.push(Hurricane().render());
+util.hurricanes.push(Hurricane().render());
 let newOrleans = City("New Orleans", 15, 8, "./images/city-1.png").render();
 let miami = City("Miami", 24, 12, "./images/city-1.png").render();
 let houston = City("Houston", 10, 10, "./images/city-1.png").render();
@@ -563,10 +552,10 @@ renderDivGrid(startingMap);
 function cityClick(city) {
   if (gameState === "shooting") {
     clearDialogueBox();
-    if (utilities.selected.itemOne.type) {
-      utilities.selected.itemOne.htmlNode.classList.remove("selected");
+    if (util.selected.itemOne.type) {
+      util.selected.itemOne.htmlNode.classList.remove("selected");
     }
-    utilities.selected.itemOne = city;
+    util.selected.itemOne = city;
     city.htmlNode.classList.add("selected");
   } else if (gameState === "purchasing" && itemToPurchase === "ammo") {
     city.ammo++;
@@ -577,44 +566,42 @@ function cityClick(city) {
 
 function hurricaneClick(hurricane) {
   if (gameState === "shooting") {
-    if (utilities.selected.itemOne.type === "city") {
-      shoot(utilities.selected.itemOne, hurricane, 1);
+    if (util.selected.itemOne.type === "city") {
+      shoot(util.selected.itemOne, hurricane, 1);
     }
     deselect();
   }
 }
 
 function deselect() {
-  if (utilities.selected.itemOne.type) {
-    utilities.selected.itemOne.htmlNode.classList.remove("selected");
+  if (util.selected.itemOne.type) {
+    util.selected.itemOne.htmlNode.classList.remove("selected");
   }
-  utilities.selected.itemOne = { type: null };
+  util.selected.itemOne = { type: null };
 }
 
 // SHOOTING
 // SHOOTING
 // SHOOTING
 
+function addAmmo(city, amount) {
+  city.ammo += amount;
+  city.render;
+}
+
 function shoot(shooter, target) {
   gameStateStorm();
-  if (shooter.ammo > 0 || shooter.type !== "city") {
-    // starter variables
-    let hit = null;
-    let deltaX = shooter.colIndex - target.colIndex;
-    let deltaY = shooter.rowIndex - target.rowIndex;
-    let distance = Math.round(utilities.pythagorean(deltaX, deltaY));
-
-    // subtract from ammo
-    if (shooter.type === "city") {
-      shooter.ammo--;
-      shooter.render();
-    }
-
-    // determine hit
+  if (shooter.ammo > 0) {
+    let hit;
+    let distance = util.pythagorean(
+      shooter.colIndex - target.colIndex,
+      shooter.rowIndex - target.rowIndex
+    );
+    addAmmo(shooter, -1);
     if (distance < 6) {
-      hit = !!utilities.randomNumber(0, 2);
+      hit = !!util.random(0, 2);
     } else {
-      hit = !utilities.randomNumber(0, Math.round(distance / 3));
+      hit = !util.random(0, distance / 3);
     }
     hit && target.type === "hurricane"
       ? hurricaneHit(shooter, target)
@@ -631,7 +618,7 @@ function hurricaneHit(shooter, target) {
 
   // Category 1 + 2
   if (target.strength < 3) {
-    let result = utilities.randomNumber(0, 5);
+    let result = util.random(0, 5);
     if (result === 4) {
       target.strengthen();
       target.render();
@@ -652,7 +639,7 @@ function hurricaneHit(shooter, target) {
 
     // Category 3 & 4
   } else if (target.strength > 2 && target.strength < 5) {
-    let result = utilities.randomNumber(0, 2);
+    let result = util.random(0, 2);
     if (result === 2) {
       target.strengthen();
       target.render();
@@ -674,7 +661,7 @@ function hurricaneHit(shooter, target) {
 
   // Category 5 & 6
   else {
-    let result = utilities.randomNumber(0, 2);
+    let result = util.random(0, 2);
     if (result === 2) {
       target.strengthen(true);
       target.render();
@@ -733,7 +720,7 @@ function raiseApprovalRating(amount) {
 }
 
 function diagonal(x1, y1, x2, y2) {
-  const coordinatesArray = utilities.bresenham(x1, y1, x2, y2);
+  const coordinatesArray = util.bresenham(x1, y1, x2, y2);
   const mapSquares = [];
   coordinatesArray.forEach(function (coordinate) {
     mapSquares.push(startingMap[coordinate[0] - 1][coordinate[1] - 1]);

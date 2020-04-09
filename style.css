@@ -208,6 +208,7 @@ button {
   margin-top: 15px;
   min-width: 30%;
   box-shadow: 4px 4px 0 0 black;
+  outline: none;
   /* border: 2px solid black; */
 }
 
