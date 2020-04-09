@@ -386,7 +386,7 @@ const weakener = (state) => ({
       );
     }
     if (utilities.hurricanes.length === 0) {
-      utilities.hurricanes.push(Hurricane());
+      utilities.hurricanes.push(Hurricane().render());
     }
     if (utilities.hurricanes.length === 0 && listOfNames.length === 0) {
       winGame();

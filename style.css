@@ -37,8 +37,10 @@ body {
   align-content: stretch;
   max-width: 840px;
   background: var(--container-color);
-  border: 2px solid black;
-  border-radius: 2px;
+  box-shadow: 2px 0px 0px 0px white, -2px 0px 0px 0px white,
+    0px 2px 0px 0px white, 0px -2px 0px 0px white, 0px 0px 0px 2px black,
+    0px 4px 0px 0px black, 0px -4px 0px 0px black, 4px 0px 0px 0px black,
+    -4px 0px 0px 0px black;
 }
 
 /* Pixelated Border */
