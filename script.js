@@ -10,18 +10,20 @@ import * as utilities from "./scripts/utilities.js";
 let approvalRating = 5;
 let budget = 5000;
 var gameState = null;
+var itemToPurchase = null;
+
+setTimeout(function () {
+  let titleCard = document.querySelector(".title-card-visible");
+  titleCard.classList.add("title-card-hidden");
+  titleCard.classList.remove("title-card-visible");
+}, 3000);
 
 function gameOver(reason) {
   console.log("You lose!");
 }
 
 function winGame() {
-  console.log("You win!");
-}
-
-function nextTurn() {
-  clearDialogueBox();
-  turnClick();
+  renderDialogueBox("You win!");
 }
 
 function proceed() {
@@ -84,12 +86,6 @@ elements.instructions2Button.onclick = () => {
   }
 };
 
-// End instructions
-
-// Start player 1
-
-// Shooting
-
 // Dialog Box
 
 elements.dialogueButton.onclick = () => {
@@ -121,8 +117,6 @@ elements.closePurchaseBox.onclick = () => {
   gameStateShooting();
 };
 
-var itemToPurchase = null;
-
 elements.buyWall.onclick = () => {
   gameStatePurchasing();
   elements.purchaseBox.classList.add("hidden");
@@ -132,8 +126,20 @@ elements.buyWall.onclick = () => {
   elements.htmlGrid.classList.add("wall");
 };
 
-elements.cancelPurchase.onclick = () => {
+elements.cancelAmmoPurchase.onclick = () => {
+  console.log("Click");
+  elements.ammoInstrux.classList.add("hidden");
+  elements.htmlGrid.classList.remove("wall");
+  elements.purchaseBox.classList.remove("hidden");
+  elements.buttonBox.classList.remove("hidden");
+  elements.htmlGrid.classList.remove("wall");
+  itemToPurchase = null;
+};
+
+elements.cancelWallPurchase.onclick = () => {
+  console.log("Click");
   elements.wallInstrux.classList.add("hidden");
+  elements.htmlGrid.classList.remove("wall");
   elements.purchaseBox.classList.remove("hidden");
   elements.buttonBox.classList.remove("hidden");
   elements.htmlGrid.classList.remove("wall");
@@ -180,7 +186,7 @@ function clearDialogueBox() {
 
 function renderDialogueBox(htmlString) {
   elements.dialogueBox.innerHTML = "";
-  elements.dialogueBox.innerHTML += htmlString;
+  elements.dialogueBox.innerHTML += "<p>" + htmlString + "</p>";
   elements.dialogueBox.classList.remove("hidden");
   elements.buttonBox.classList.remove("hidden");
 }
@@ -188,7 +194,7 @@ function renderDialogueBox(htmlString) {
 function addToDialogueBox(htmlString) {
   elements.dialogueBox.classList.remove("hidden");
   elements.buttonBox.classList.remove("hidden");
-  elements.dialogueBox.innerHTML += htmlString;
+  elements.dialogueBox.innerHTML += "<p>" + htmlString + "</p>";
 }
 
 // 1. Script
@@ -262,14 +268,16 @@ function animateMovement(state, colChange, rowChange) {
 
 const mover = (state) => ({
   move(xMinChange, xMaxChange, yMinChange, yMaxChange) {
+    console.log(`${xMinChange}, ${xMaxChange}, ${yMinChange}, ${yMaxChange}`);
     var colChange = utilities.randomNumber(xMinChange, xMaxChange);
     var rowChange = utilities.randomNumber(yMinChange, yMaxChange);
     var colInitial = state.colIndex;
     var rowInitial = state.rowIndex;
     var colFinal = colInitial + colChange;
+    var rowFinal = rowInitial + rowChange;
     colFinal < 1 ? (colFinal = 1) : null;
     rowFinal < 1 ? (rowFinal = 1) : null;
-    var rowFinal = rowInitial + rowChange;
+    console.log(`${colFinal}, ${rowFinal}`);
     var floodCount = 0;
 
     let traversion = diagonal(colInitial, rowInitial, colFinal, rowFinal);
@@ -326,7 +334,7 @@ const mover = (state) => ({
             );
             lowerApprovalRating(3);
           } else {
-            if (!square.country && square.row < 13) {
+            if (square.country === "USA" && square.row < 13) {
               floodCount++;
             }
           }
@@ -361,7 +369,7 @@ const mover = (state) => ({
     setTimeout(function () {
       console.log(`flood count: ${floodCount}`);
       if (floodCount > 1) {
-        addToDialogueBox(`${floodCount} squares of countryside were flooded.`);
+        addToDialogueBox(`Large swaths of the South have been flooded.`);
         lowerApprovalRating(Math.floor(floodCount / 2));
       }
     }, 3500);
@@ -388,6 +396,8 @@ const weakener = (state) => ({
         ),
         1
       );
+      console.log("Weakened array:");
+      console.log(utilities.hurricanes);
     }
     if (utilities.hurricanes.length === 0 && listOfNames.length === 0) {
       winGame();
@@ -406,7 +416,7 @@ function Hurricane() {
     titleNode: document.createElement("h2"),
     subtitleNode: document.createElement("p"),
     type: "hurricane",
-    icon: "🌊",
+    icon: `<img src="./images/hurricane.png">`,
     subtitle: null,
   };
   hurricane.subtitle = `Category ${hurricane.strength}`;
@@ -483,24 +493,32 @@ function turnClick() {
 }
 
 function hurricaneTurn(hurricane, index, array) {
-  hurricane.move(-4, -1, -4, -1);
+  let xMin = -4;
+  let xMax = -1;
+  if (hurricane.row < 10) {
+    xMin = -3;
+    xMax = 3;
+  }
+  hurricane.move(-4, -1, xMin, xMax);
   // remove hurricane from off the map
   if (hurricane.colIndex < 1 || hurricane.rowIndex < 1) {
     hurricane.htmlNode.remove();
     array.splice(index, 1);
   }
   // weaken hurricane on land
-  if (startingMap[hurricane.rowIndex][hurricane.colIndex].type === "land") {
-    hurricane.weaken();
-  } else {
-    let rand = utilities.randomNumber(0, 5);
-    if (rand < 2) {
-      hurricane.strengthen();
-    }
-    if (rand === 5 && hurricane.strength !== 6) {
+  setTimeout(function () {
+    if (startingMap[hurricane.rowIndex][hurricane.colIndex].type === "land") {
       hurricane.weaken();
+    } else {
+      let rand = utilities.randomNumber(0, 5);
+      if (rand < 2) {
+        hurricane.strengthen();
+      }
+      if (rand === 5 && hurricane.strength !== 6) {
+        hurricane.weaken();
+      }
     }
-  }
+  }, 3000);
   // remove weakened hurricane
   hurricane.render();
 }
@@ -510,7 +528,6 @@ function hurricaneTurn(hurricane, index, array) {
 function squareClick(object) {
   console.log(object);
   console.log(getSurroundingSquares(object));
-  flood(object);
   deselect();
   if (gameState === "shooting") {
     clearDialogueBox();
@@ -522,11 +539,6 @@ function squareClick(object) {
   ) {
     object.type = "wall";
     object.htmlNode.classList.add("wall");
-    console.log(object);
-    elements.htmlGrid.classList.remove("wall");
-    gameState = "shooting";
-    elements.wallInstrux.classList.add("hidden");
-    clearDialogueBox();
     lowerBudget(500);
   }
 }
@@ -560,10 +572,6 @@ function cityClick(city) {
     city.ammo++;
     city.render();
     lowerBudget(100);
-    elements.ammoInstrux.classList.add("hidden");
-    gameState = "shooting";
-    elements.wallInstrux.classList.add("hidden");
-    clearDialogueBox();
   }
 }
 
@@ -610,7 +618,7 @@ function shoot(shooter, target) {
     }
     hit && target.type === "hurricane"
       ? hurricaneHit(shooter, target)
-      : renderDialogueBox(`<p>Miss!</p>`);
+      : renderDialogueBox(`Miss!`);
   } else {
     renderDialogueBox("You're out of ammo!");
     gameStateShooting();
@@ -618,7 +626,7 @@ function shoot(shooter, target) {
 }
 
 function hurricaneHit(shooter, target) {
-  renderDialogueBox(`<p>${shooter.name} hit ${target.name}!</p>`);
+  renderDialogueBox(`${shooter.name} hit ${target.name}!`);
   var resultText = "";
 
   // Category 1 + 2
@@ -627,15 +635,19 @@ function hurricaneHit(shooter, target) {
     if (result === 4) {
       target.strengthen();
       target.render();
-      resultText += `<p>You enraged ${target.name}. It has gotten stronger, and is now a category ${target.strength}.</p>`;
+      addToDialogueBox(
+        `You enraged ${target.name}. It has gotten stronger, and is now a category ${target.strength}.`
+      );
     } else if (result === 5) {
-      resultText += `<p>${target.name} shot back!!!</p>`;
+      addToDialogueBox(`${target.name} shot back!!!`);
       lowerApprovalRating(1);
     } else {
       target.weaken();
       target.render();
       raiseApprovalRating(1);
-      resultText += `<p>${target.name} was weakened to a category ${target.strength}</p>`;
+      addToDialogueBox(
+        `${target.name} was weakened to a category ${target.strength}`
+      );
     }
 
     // Category 3 & 4
@@ -644,15 +656,19 @@ function hurricaneHit(shooter, target) {
     if (result === 2) {
       target.strengthen();
       target.render();
-      resultText += `<p>You enraged ${target.name}. It has gotten stronger, and is now a category ${target.strength}.</p>`;
+      addToDialogueBox(
+        `You enraged ${target.name}. It has gotten stronger, and is now a category ${target.strength}.`
+      );
     } else if (result === 1) {
-      resultText += `<p>${target.name} shot back!!!</p>`;
+      addToDialogueBox(`${target.name} shot back!!!`);
       lowerApprovalRating(1);
     } else {
       target.weaken();
       target.render();
       raiseApprovalRating(1);
-      resultText += `<p>${target.name} was weakened to a category ${target.strength}</p>`;
+      addToDialogueBox(
+        `${target.name} was weakened to a category ${target.strength}`
+      );
     }
   }
 
@@ -662,15 +678,19 @@ function hurricaneHit(shooter, target) {
     if (result === 2) {
       target.strengthen(true);
       target.render();
-      resultText += `<p>You enraged ${target.name}. It has gotten stronger, and is now a category ${target.strength}.</p>`;
+      addToDialogueBox(
+        `You enraged ${target.name}. It has gotten stronger, and is now a category ${target.strength}.`
+      );
     } else if (result === 1) {
-      resultText += `<p>${target.name} shot back!!!</p>`;
+      addToDialogueBox(`${target.name} shot back!!!`);
       lowerApprovalRating(1);
     } else {
       target.weaken();
       target.render();
       raiseApprovalRating(1);
-      resultText += `<p>${target.name} was weakened to a category ${target.strength}</p>`;
+      addToDialogueBox(
+        `${target.name} was weakened to a category ${target.strength}`
+      );
     }
   }
   addToDialogueBox(resultText);

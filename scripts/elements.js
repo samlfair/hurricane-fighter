@@ -20,9 +20,10 @@ let purchaseBox = document.getElementById("purchase-box");
 let buyAmmo = document.getElementById("purchase-ammo");
 let buyWall = document.getElementById("purchase-wall");
 let closePurchaseBox = document.getElementById("close-purchase-box");
-let cancelPurchase = document.getElementById("cancel-purchase");
 let ammoInstrux = document.getElementById("ammo-instrux");
 let wallInstrux = document.getElementById("wall-instrux");
+let cancelAmmoPurchase = ammoInstrux.querySelector("button");
+let cancelWallPurchase = wallInstrux.querySelector("button");
 
 // Buttons
 
@@ -44,7 +45,8 @@ export {
   buyAmmo,
   buyWall,
   closePurchaseBox,
-  cancelPurchase,
   ammoInstrux,
   wallInstrux,
+  cancelAmmoPurchase,
+  cancelWallPurchase,
 };

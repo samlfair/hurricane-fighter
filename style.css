@@ -53,6 +53,29 @@ body {
   overflow: hidden;
 }
 
+/* Title Card */
+
+.title-card-visible {
+  grid-row-start: 1;
+  grid-row-end: 26;
+  grid-column-start: 1;
+  grid-column-end: 34;
+  background-image: url(./images/title-card.png);
+  background-size: cover;
+  background-position: center center;
+  background-color: #ac0066;
+  z-index: 100;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title-card-hidden {
+  display: none;
+  z-index: -100;
+}
+
 /* Overlay */
 
 #cash-button {
@@ -118,6 +141,7 @@ body {
   background: white;
   padding: 0;
   overflow: visible;
+  min-width: 200px;
   max-width: 500px;
   font-size: 0.7em;
   max-height: 300px;
@@ -196,15 +220,20 @@ body {
 }
 
 .hurricane {
-  z-index: 2;
+  z-index: 3;
   /* border-radius: 50%;
   background: white;
   width: 400%;
   height: 400%; */
 }
 
-.hurricane span {
-  /* display: none; */
+.hurricane img {
+  width: 120px;
+  z-index: 2;
+}
+
+.hurricane h2 {
+  margin-top: -70px;
 }
 
 .city:focus {
@@ -396,14 +425,6 @@ body {
   align-self: flex-end;
   border-bottom-left-radius: 0;
 }
-
-/* .border-bottom-left::before.border-top-left::before {
-  border-top: 2px solid var(--coastline-color);
-  border-right: 2px solid var(--coastline-color);
-  border-bottom: 0;
-  align-self: flex-end;
-  border-bottom-right-radius: 0;
-} */
 
 .border-top-left::before,
 .border-top-right::after {
