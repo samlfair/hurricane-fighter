@@ -5,7 +5,7 @@ let htmlGrid = document.getElementById("grid-container");
 let approvalBar = document.getElementById("rating");
 let budgetBar = document.getElementById("budget");
 
-// Text boxes
+// Text Boxes & Buttons
 let buttonBox = document.querySelector(".button-box");
 let introduction = document.getElementById("introduction");
 let instructions1 = document.getElementById("instructions-1");
@@ -15,6 +15,14 @@ let introButton = introduction.querySelector("button");
 let instructions1Button = instructions1.querySelector("button");
 let instructions2Button = instructions2.querySelector("button");
 let dialogueButton = document.getElementById("dialogue-box-button");
+let cashButton = document.getElementById("cash-button");
+let purchaseBox = document.getElementById("purchase-box");
+let buyAmmo = document.getElementById("purchase-ammo");
+let buyWall = document.getElementById("purchase-wall");
+let closePurchaseBox = document.getElementById("close-purchase-box");
+let cancelPurchase = document.getElementById("cancel-purchase");
+let ammoInstrux = document.getElementById("ammo-instrux");
+let wallInstrux = document.getElementById("wall-instrux");
 
 // Buttons
 
@@ -31,4 +39,12 @@ export {
   buttonBox,
   dialogueBox,
   dialogueButton,
+  cashButton,
+  purchaseBox,
+  buyAmmo,
+  buyWall,
+  closePurchaseBox,
+  cancelPurchase,
+  ammoInstrux,
+  wallInstrux,
 };

@@ -6,42 +6,151 @@ import * as elements from "./scripts/elements.js";
 import * as utilities from "./scripts/utilities.js";
 // import { City, Hurricane } from "./scripts/factoryFunctions.js";
 
+// Global Variables
+
+let approvalRating = 5;
+let budget = 5000;
+var gameState = null;
+
 function nextTurn() {
   clearDialogueBox();
   turnClick();
 }
 
 function proceed() {
-  if (playersTurn) {
+  if (gameState === "storm") {
+    gameStateShooting();
     clearDialogueBox();
     turnClick();
-  } else {
+  } else if (gameState === "shooting") {
     clearDialogueBox();
   }
 }
 
-// If true, player's turn. If false, hurricane's turn.
-var playersTurn = true;
+function gameStatePurchasing() {
+  gameState = "purchasing";
+}
+
+function gameStateShooting() {
+  gameState = "shooting";
+}
+
+function gameStateInstruction() {
+  gameState = "instruction";
+}
+
+function gameStateStorm() {
+  gameState = "storm";
+}
+
+// gameState = "instruction", "shooting", "storm", "purchasing"
+
+gameStateInstruction();
 
 elements.introButton.onclick = () => {
-  elements.introduction.classList.add("hidden");
-  elements.instructions1.classList.remove("hidden");
+  if (gameState === "instruction") {
+    elements.introduction.classList.add("hidden");
+    elements.instructions1.classList.remove("hidden");
+  } else {
+    console.log(gameState);
+  }
 };
 
 elements.instructions1Button.onclick = () => {
-  elements.instructions1.classList.add("hidden");
-  elements.instructions2.classList.remove("hidden");
+  if (gameState === "instruction") {
+    elements.instructions1.classList.add("hidden");
+    elements.instructions2.classList.remove("hidden");
+  } else {
+    console.log(gameState);
+  }
 };
 
 elements.instructions2Button.onclick = () => {
-  elements.instructions2.classList.add("hidden");
-  elements.buttonBox.classList.add("hidden");
-  elements.dialogueBox.classList.remove("hidden");
+  if (gameState === "instruction") {
+    elements.instructions2.classList.add("hidden");
+    elements.buttonBox.classList.add("hidden");
+    elements.dialogueBox.classList.remove("hidden");
+    gameStateShooting();
+  } else {
+    console.log(gameState);
+  }
 };
 
+// End instructions
+
+// Start player 1
+
+// Shooting
+
+// Dialog Box
+
 elements.dialogueButton.onclick = () => {
-  proceed();
+  if (gameState === "storm") {
+    proceed();
+  } else if (gameState === "shooting") {
+    clearDialogueBox();
+  }
 };
+
+// PURCHASE
+// PURCHASE
+// PURCHASE
+
+elements.cashButton.onclick = () => {
+  if (gameState === "shooting") {
+    clearDialogueBox();
+    elements.purchaseBox.classList.remove("hidden");
+    elements.buttonBox.classList.remove("hidden");
+    gameStateInstruction();
+  } else {
+    console.log(gameState);
+  }
+};
+
+elements.closePurchaseBox.onclick = () => {
+  elements.purchaseBox.classList.add("hidden");
+  elements.buttonBox.classList.add("hidden");
+  gameStateShooting();
+};
+
+var itemToPurchase = null;
+
+elements.buyWall.onclick = () => {
+  gameStatePurchasing();
+  elements.purchaseBox.classList.add("hidden");
+  elements.wallInstrux.classList.remove("hidden");
+  console.log("Buy some wall!");
+  itemToPurchase = "wall";
+  elements.htmlGrid.classList.add("wall");
+};
+
+elements.cancelPurchase.onclick = () => {
+  elements.wallInstrux.classList.add("hidden");
+  elements.purchaseBox.classList.remove("hidden");
+  elements.buttonBox.classList.remove("hidden");
+  elements.htmlGrid.classList.remove("wall");
+  itemToPurchase = null;
+};
+
+elements.buyAmmo.onclick = () => {
+  gameStatePurchasing();
+  console.log("Buy some ammo!");
+  itemToPurchase = "ammo";
+  elements.purchaseBox.classList.add("hidden");
+  elements.ammoInstrux.classList.remove("hidden");
+};
+
+function lowerBudget(amount) {
+  budget -= amount;
+  elements.budgetBar.setAttribute("value", budget);
+}
+
+function raiseBudget(amount) {
+  budget += amount;
+  elements.budgetBar.setAttribute("value", budget);
+}
+
+// Dialogue Box
 
 function clearDialogueBox() {
   elements.dialogueBox.innerHTML = "";
@@ -61,11 +170,6 @@ function addToDialogueBox(htmlString) {
   elements.buttonBox.classList.remove("hidden");
   elements.dialogueBox.innerHTML += htmlString;
 }
-
-// Global Variables
-
-let approvalRating = 5;
-let budget = 5000;
 
 // 1. Script
 
@@ -221,12 +325,6 @@ const mover = (state) => ({
   },
 });
 
-const shooter = (state) => ({
-  shoot(accuracy) {
-    console.log("Shots fired!");
-  },
-});
-
 const strengthener = (state) => ({
   strengthen(supercharge = false) {
     if (state.strength < 5 || supercharge) {
@@ -276,8 +374,7 @@ function Hurricane() {
     mover(hurricane),
     strengthener(hurricane),
     weakener(hurricane),
-    renderer(hurricane),
-    shooter(hurricane)
+    renderer(hurricane)
   );
 }
 
@@ -303,7 +400,7 @@ function City(name, colIndex, rowIndex, iconUrl = "./images/city-1.png") {
   });
   startingMap[rowIndex - 1][colIndex - 1].feature = { city: city };
 
-  return Object.assign(city, renderer(city), shooter(city));
+  return Object.assign(city, renderer(city));
 }
 
 function htmlNodeConstructor(object) {
@@ -319,8 +416,6 @@ function htmlNodeConstructor(object) {
 // TURN CHANGE
 // TURN CHANGE
 // TURN CHANGE
-
-console.log(startingMap);
 
 function turnClick() {
   console.log([...utilities.hurricanes]);
@@ -369,6 +464,18 @@ function hurricaneTurn(hurricane, index, array) {
 function squareClick(object) {
   console.log(object);
   deselect();
+  if (gameState === "shooting") {
+    clearDialogueBox();
+  } else if (gameState === "purchasing" && itemToPurchase === "wall") {
+    object.type = "wall";
+    object.htmlNode.classList.add("wall");
+    console.log(object);
+    lowerBudget(500);
+    elements.htmlGrid.classList.remove("wall");
+    gameState = "shooting";
+    elements.wallInstrux.classList.add("hidden");
+    clearDialogueBox();
+  }
 }
 
 // INITIALIZE
@@ -389,18 +496,31 @@ renderDivGrid(startingMap);
 // CHARACTER CLICKING
 
 function cityClick(city) {
-  if (utilities.selected.itemOne.type) {
-    utilities.selected.itemOne.htmlNode.classList.remove("selected");
+  if (gameState === "shooting") {
+    clearDialogueBox();
+    if (utilities.selected.itemOne.type) {
+      utilities.selected.itemOne.htmlNode.classList.remove("selected");
+    }
+    utilities.selected.itemOne = city;
+    city.htmlNode.classList.add("selected");
+  } else if (gameState === "purchasing" && itemToPurchase === "ammo") {
+    city.ammo++;
+    city.render();
+    lowerBudget(100);
+    elements.ammoInstrux.classList.add("hidden");
+    gameState = "shooting";
+    elements.wallInstrux.classList.add("hidden");
+    clearDialogueBox();
   }
-  utilities.selected.itemOne = city;
-  city.htmlNode.classList.add("selected");
 }
 
 function hurricaneClick(hurricane) {
-  if (utilities.selected.itemOne.type === "city") {
-    shoot(utilities.selected.itemOne, hurricane, 1);
+  if (gameState === "shooting") {
+    if (utilities.selected.itemOne.type === "city") {
+      shoot(utilities.selected.itemOne, hurricane, 1);
+    }
+    deselect();
   }
-  deselect();
 }
 
 function deselect() {
@@ -415,6 +535,7 @@ function deselect() {
 // SHOOTING
 
 function shoot(shooter, target) {
+  gameStateStorm();
   if (shooter.ammo > 0 || shooter.type !== "city") {
     // starter variables
     let hit = null;
@@ -438,7 +559,8 @@ function shoot(shooter, target) {
       ? hurricaneHit(shooter, target)
       : renderDialogueBox(`<p>Miss!</p>`);
   } else {
-    console.log("You're out of ammo!");
+    renderDialogueBox("You're out of ammo!");
+    gameStateShooting();
   }
 }
 

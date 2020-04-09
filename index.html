@@ -54,11 +54,40 @@
               <button class="enter">OK</button>
             </div>
             <!-- 4. DIALOGUE BOX -->
-            <div id="dialogue-box" class="hidden">Test</div>
+            <div id="dialogue-box" class="hidden"></div>
             <button class="enter" id="dialogue-box-button">OK</button>
+
+            <!-- 5. PURCHASE BOX -->
+            <div id="purchase-box" class="hidden">
+              <p>Purchase:</p>
+              <div class="row" id="purchase-ammo">
+                <p>Ammo</p>
+                <p></p>
+                <p>$100</p>
+              </div>
+              <div class="row" id="purchase-wall">
+                <p>Wall</p>
+                <p></p>
+                <p>$500</p>
+              </div>
+              <button id="close-purchase-box" class="cancel">Close</button>
+            </div>
+
+            <!-- 6. PURCHASE WALL -->
+            <div id="wall-instrux" class="hidden">
+              <p>Select where you would like to build a wall.</p>
+              <button id="cancel-purchase" class="cancel">Cancel</button>
+            </div>
+
+            <!-- 7. PURCHASE AMMO -->
+            <div id="ammo-instrux" class="hidden">
+              <p>Select the city you would like to buy ammo for.</p>
+              <button id="cancel-purchase" class="cancel">Cancel</button>
+            </div>
             <!-- END SCRIPT -->
           </div>
         </div>
+        <div id="cash-button">$</div>
       </div>
       <div id="stats">
         <div class="nes-container is-rounded">
