@@ -251,11 +251,15 @@ body {
 }
 
 .wall .usa:hover {
-  background: orange;
+  background: url(./images/wall.png);
+  background-position: center center;
+  background-size: 100% 100%;
 }
 
 .usa.wall {
-  background: orange;
+  background: url(./images/wall.png);
+  background-position: center center;
+  background-size: 100% 100%;
 }
 
 /* JS ANIMATIONS */

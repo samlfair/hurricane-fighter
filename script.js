@@ -1,7 +1,6 @@
 // Imports
 
 import startingMap from "./scripts/map-1.js";
-import * as basics from "./scripts/utilities.js";
 import * as elements from "./scripts/elements.js";
 import * as utilities from "./scripts/utilities.js";
 // import { City, Hurricane } from "./scripts/factoryFunctions.js";
@@ -12,6 +11,14 @@ let approvalRating = 5;
 let budget = 5000;
 var gameState = null;
 
+function gameOver(reason) {
+  console.log("You lose!");
+}
+
+function winGame(){
+  console.log("You win!");
+}
+
 function nextTurn() {
   clearDialogueBox();
   turnClick();
@@ -19,6 +26,7 @@ function nextTurn() {
 
 function proceed() {
   if (gameState === "storm") {
+    raiseBudget(100);
     gameStateShooting();
     clearDialogueBox();
     turnClick();
@@ -143,10 +151,22 @@ elements.buyAmmo.onclick = () => {
 function lowerBudget(amount) {
   budget -= amount;
   elements.budgetBar.setAttribute("value", budget);
+  console.log(budget);
+  if (budget <= 0) {
+    console.log("Budget is low");
+    budget = 0;
+    console.log(budget);
+    renderDialogueBox(
+      "You ran out of money! Congress is enraged, and your party has turned on you. Sad!"
+    );
+  }
 }
 
 function raiseBudget(amount) {
   budget += amount;
+  if (budget > 10000) {
+    budget = 10000;
+  }
   elements.budgetBar.setAttribute("value", budget);
 }
 
@@ -242,8 +262,8 @@ function animateMovement(state, colChange, rowChange) {
 
 const mover = (state) => ({
   move(xMinChange, xMaxChange, yMinChange, yMaxChange) {
-    var colChange = basics.randomNumber(xMinChange, xMaxChange);
-    var rowChange = basics.randomNumber(yMinChange, yMaxChange);
+    var colChange = utilities.randomNumber(xMinChange, xMaxChange);
+    var rowChange = utilities.randomNumber(yMinChange, yMaxChange);
     var colInitial = state.colIndex;
     var rowInitial = state.rowIndex;
     var colFinal = colInitial + colChange;
@@ -263,6 +283,28 @@ const mover = (state) => ({
         rowChange = lastSquare.row - rowInitial;
         colFinal = lastSquare.col;
         rowFinal = lastSquare.row;
+      }
+    });
+
+    // Hit wall
+
+    traversion.forEach(function (square, index, array) {
+      if (square.type === "wall") {
+        array.splice(index + 1);
+        renderDialogueBox(
+          `${state.name} hit a wall! Your approval rating jumps!`
+        );
+        raiseApprovalRating(3);
+        let lastSquare = traversion[traversion.length - 1];
+        colChange = lastSquare.col - colInitial;
+        rowChange = lastSquare.row - rowInitial;
+        colFinal = lastSquare.col;
+        rowFinal = lastSquare.row;
+        setTimeout(function () {
+          while (state.strength > 0) {
+            state.weaken();
+          }
+        }, 3500);
       }
     });
 
@@ -346,14 +388,17 @@ const weakener = (state) => ({
         1
       );
     }
+    if (hurricanes.length === 0 && listOfNames.length === 0) {
+      winGame();
+    }
   },
 });
 
 function Hurricane() {
   let hurricane = {
-    name: "Hurricane " + basics.listOfNames.shift(),
-    colIndex: basics.randomNumber(19, 30),
-    rowIndex: basics.randomNumber(16, 22),
+    name: "Hurricane " + utilities.listOfNames.shift(),
+    colIndex: utilities.randomNumber(19, 30),
+    rowIndex: utilities.randomNumber(16, 22),
     strength: 2,
     htmlNode: document.createElement("div"),
     iconNode: document.createElement("span"),
@@ -383,7 +428,7 @@ function City(name, colIndex, rowIndex, iconUrl = "./images/city-1.png") {
     name: name,
     colIndex: colIndex,
     rowIndex: rowIndex,
-    ammo: basics.randomNumber(2, 5),
+    ammo: utilities.randomNumber(2, 5),
     htmlNode: document.createElement("div"),
     iconNode: document.createElement("span"),
     titleNode: document.createElement("h2"),
@@ -422,7 +467,7 @@ function turnClick() {
   [...utilities.hurricanes].forEach((hurricane, index, array) =>
     hurricaneTurn(hurricane, index, array)
   );
-  if (basics.randomNumber(0, 5) === 0 && utilities.hurricanes.length < 4) {
+  if (utilities.randomNumber(0, 5) === 0 && utilities.hurricanes.length < 4) {
     let newHurricane = Hurricane();
     utilities.hurricanes.push(newHurricane);
     console.log(newHurricane);
@@ -447,7 +492,7 @@ function hurricaneTurn(hurricane, index, array) {
   if (startingMap[hurricane.rowIndex][hurricane.colIndex].type === "land") {
     hurricane.weaken();
   } else {
-    let rand = basics.randomNumber(0, 5);
+    let rand = utilities.randomNumber(0, 5);
     if (rand < 2) {
       hurricane.strengthen();
     }
@@ -466,15 +511,20 @@ function squareClick(object) {
   deselect();
   if (gameState === "shooting") {
     clearDialogueBox();
-  } else if (gameState === "purchasing" && itemToPurchase === "wall") {
+  } else if (
+    gameState === "purchasing" &&
+    itemToPurchase === "wall" &&
+    object.country === "USA" &&
+    object.type !== "wall"
+  ) {
     object.type = "wall";
     object.htmlNode.classList.add("wall");
     console.log(object);
-    lowerBudget(500);
     elements.htmlGrid.classList.remove("wall");
     gameState = "shooting";
     elements.wallInstrux.classList.add("hidden");
     clearDialogueBox();
+    lowerBudget(500);
   }
 }
 
@@ -541,7 +591,7 @@ function shoot(shooter, target) {
     let hit = null;
     let deltaX = shooter.colIndex - target.colIndex;
     let deltaY = shooter.rowIndex - target.rowIndex;
-    let distance = Math.round(basics.pythagorean(deltaX, deltaY));
+    let distance = Math.round(utilities.pythagorean(deltaX, deltaY));
 
     // subtract from ammo
     if (shooter.type === "city") {
@@ -551,9 +601,9 @@ function shoot(shooter, target) {
 
     // determine hit
     if (distance < 6) {
-      hit = !!basics.randomNumber(0, 2);
+      hit = !!utilities.randomNumber(0, 2);
     } else {
-      hit = !basics.randomNumber(0, Math.round(distance / 3));
+      hit = !utilities.randomNumber(0, Math.round(distance / 3));
     }
     hit && target.type === "hurricane"
       ? hurricaneHit(shooter, target)
@@ -570,7 +620,7 @@ function hurricaneHit(shooter, target) {
 
   // Category 1 + 2
   if (target.strength < 3) {
-    let result = basics.randomNumber(0, 5);
+    let result = utilities.randomNumber(0, 5);
     if (result === 4) {
       target.strengthen();
       target.render();
@@ -587,7 +637,7 @@ function hurricaneHit(shooter, target) {
 
     // Category 3 & 4
   } else if (target.strength > 2 && target.strength < 5) {
-    let result = basics.randomNumber(0, 2);
+    let result = utilities.randomNumber(0, 2);
     if (result === 2) {
       target.strengthen();
       target.render();
@@ -605,7 +655,7 @@ function hurricaneHit(shooter, target) {
 
   // Category 5 & 6
   else {
-    let result = basics.randomNumber(0, 2);
+    let result = utilities.randomNumber(0, 2);
     if (result === 2) {
       target.strengthen(true);
       target.render();
@@ -638,7 +688,15 @@ function lowerApprovalRating(amount) {
 }
 
 function raiseApprovalRating(amount) {
-  approvalRating++;
+  if (approvalRating === 10) {
+    addToDialogueBox(
+      "Your approval rating is already so high, the people couldn't love you more!"
+    );
+  }
+  if (approvalRating + amount > 10) {
+    amount = 10 - approvalRating;
+  }
+  approvalRating += amount;
   addToDialogueBox(
     `Your approval rating has increased ${amount} point${
       amount > 1 ? "s" : ""
