@@ -18,24 +18,25 @@ setTimeout(function () {
   titleCard.classList.remove("title-card-visible");
 }, 3000);
 
-function gameOver(reason) {
+function endGame(boolean, reason) {
   gameState = "over";
   clearDialogueBox();
+  if (boolean) {
+    elements.endGameText.innerText = "Congratulations! ";
+  } else {
+    elements.endGameText.innerText = "Game over! ";
+  }
   elements.endGame.classList.remove("hidden");
-  elements.endGameText.innerText = reason;
+  elements.endGameText.innerText += reason;
   elements.playAgain.addEventListener("click", function () {
     window.location.reload(true);
   });
 }
 
-function winGame() {
-  renderDialogueBox("You win!");
-}
-
 function proceed() {
   if (gameState === "storm") {
     raiseBudget(100);
-    gameStateShooting();
+    // gameStateShooting();
     clearDialogueBox();
     turnClick();
   } else if (gameState === "shooting") {
@@ -153,7 +154,8 @@ function lowerBudget(amount) {
   elements.budgetBar.setAttribute("value", budget);
   if (budget <= 0) {
     budget = 0;
-    gameOver(
+    endGame(
+      false,
       "You ran out of money! Congress is enraged, and your party has turned on you. Sad!"
     );
   }
@@ -340,6 +342,7 @@ const mover = (state) => ({
       state.htmlNode.classList.remove("transition");
 
       state.htmlNode.style.transform = ``;
+      console.log("just wait");
 
       state.htmlNode.classList.add("col" + colFinal, "row" + rowFinal);
       if (state.colIndex === 1 || state.rowIndex === 1) {
@@ -363,7 +366,8 @@ const mover = (state) => ({
         addToDialogueBox(`Large swaths of the South have been flooded.`);
         lowerApprovalRating(Math.floor(floodCount / 2));
       }
-    }, 3500);
+      gameStateShooting();
+    }, 3000);
   },
 });
 
@@ -377,6 +381,14 @@ const strengthener = (state) => ({
 
 const weakener = (state) => ({
   weaken() {
+    if (utilities.hurricanes.length === 0 && listOfNames.length === 0) {
+      endGame(
+        true,
+        "You survived hurricane season and kept your approval rating high! You win another four years in office."
+      );
+      return;
+    }
+    console.log("Weaken!");
     state.strength--;
     if (state.strength <= 0) {
       addToDialogueBox(`${state.name} died.`);
@@ -390,9 +402,6 @@ const weakener = (state) => ({
     }
     if (utilities.hurricanes.length === 0) {
       utilities.hurricanes.push(Hurricane().render());
-    }
-    if (utilities.hurricanes.length === 0 && listOfNames.length < 25) {
-      winGame();
     }
   },
 });
@@ -469,11 +478,11 @@ function turnClick() {
   [...utilities.hurricanes].forEach((hurricane, index, array) =>
     hurricaneTurn(hurricane, index, array)
   );
-  // if (utilities.randomNumber(0, 5) === 0 && utilities.hurricanes.length < 4) {
-  //   let newHurricane = Hurricane();
-  //   utilities.hurricanes.push(newHurricane);
-  //   newHurricane.render();
-  // }
+  if (utilities.randomNumber(0, 5) === 0 && utilities.hurricanes.length < 3) {
+    let newHurricane = Hurricane();
+    utilities.hurricanes.push(newHurricane);
+    newHurricane.render();
+  }
   if (utilities.hurricanes.length === 0) {
     let newHurricane = Hurricane();
     utilities.hurricanes.push(newHurricane);
@@ -482,13 +491,14 @@ function turnClick() {
 }
 
 function hurricaneTurn(hurricane, index, array) {
+  console.log(hurricane);
   let xMin = -4;
   let xMax = -1;
-  if (hurricane.row < 10) {
+  if (hurricane.rowIndex < 10) {
     xMin = -3;
     xMax = 3;
   }
-  hurricane.move(-4, -1, xMin, xMax);
+  hurricane.move(xMin, xMax, -4, -1);
   // remove hurricane from off the map
   if (hurricane.colIndex < 1 || hurricane.rowIndex < 1) {
     hurricane.htmlNode.remove();
@@ -509,9 +519,9 @@ function hurricaneTurn(hurricane, index, array) {
         hurricane.weaken();
       }
     }
+    hurricane.render();
   }, 3000);
   // remove weakened hurricane
-  hurricane.render();
 }
 
 // Click on Square //
@@ -693,7 +703,8 @@ function hurricaneHit(shooter, target) {
 function lowerApprovalRating(amount) {
   approvalRating--;
   if (approvalRating <= 0) {
-    gameOver("Your approval rating dropped too low!");
+    endGame(false, "Your approval rating dropped too low!");
+    return;
   }
   addToDialogueBox(
     `Your approval rating has dropped ${amount} point${
@@ -715,7 +726,7 @@ function raiseApprovalRating(amount) {
   approvalRating += amount;
   addToDialogueBox(
     `Your approval rating has increased ${amount} point${
-      amount === 1 ? "s" : ""
+      amount == 1 ? "" : "s"
     } to ${approvalRating}.`
   );
   elements.approvalBar.setAttribute("value", approvalRating);
@@ -787,36 +798,36 @@ function flood(object) {
 
   // corners
   if (
-    surroundings[3].type === "land" &&
-    surroundings[1].type === "land" &&
-    surroundings[0].type === "land"
+    surroundings[3].type !== "ocean" &&
+    surroundings[1].type !== "ocean" &&
+    surroundings[0].type !== "ocean"
   ) {
     surroundings[0].htmlNode.classList.add("border-bottom-right");
   } else {
     surroundings[0].htmlNode.classList.remove("border-bottom-right");
   }
   if (
-    surroundings[1].type === "land" &&
-    surroundings[4].type === "land" &&
-    surroundings[2].type === "land"
+    surroundings[1].type !== "ocean" &&
+    surroundings[4].type !== "ocean" &&
+    surroundings[2].type !== "ocean"
   ) {
     surroundings[2].htmlNode.classList.add("border-bottom-left");
   } else {
     surroundings[2].htmlNode.classList.remove("border-bottom-left");
   }
   if (
-    surroundings[4].type === "land" &&
-    surroundings[6].type === "land" &&
-    surroundings[7].type === "land"
+    surroundings[4].type !== "ocean" &&
+    surroundings[6].type !== "ocean" &&
+    surroundings[7].type !== "ocean"
   ) {
     surroundings[7].htmlNode.classList.add("border-top-left");
   } else {
     surroundings[7].htmlNode.classList.remove("border-top-left");
   }
   if (
-    surroundings[6].type === "land" &&
-    surroundings[3].type === "land" &&
-    surroundings[5].type === "land"
+    surroundings[6].type !== "ocean" &&
+    surroundings[3].type !== "ocean" &&
+    surroundings[5].type !== "ocean"
   ) {
     surroundings[5].htmlNode.classList.add("border-top-right");
   } else {
