@@ -15,7 +15,7 @@ function gameOver(reason) {
   console.log("You lose!");
 }
 
-function winGame(){
+function winGame() {
   console.log("You win!");
 }
 
@@ -330,7 +330,8 @@ const mover = (state) => ({
               floodCount++;
             }
           }
-          square.htmlNode.classList.add("flooded");
+          // square.htmlNode.classList.add("flooded");
+          flood(square);
         }
       }, (3000 / traversion.length) * i);
     });
@@ -388,7 +389,7 @@ const weakener = (state) => ({
         1
       );
     }
-    if (hurricanes.length === 0 && listOfNames.length === 0) {
+    if (utilities.hurricanes.length === 0 && listOfNames.length === 0) {
       winGame();
     }
   },
@@ -508,6 +509,8 @@ function hurricaneTurn(hurricane, index, array) {
 
 function squareClick(object) {
   console.log(object);
+  console.log(getSurroundingSquares(object));
+  flood(object);
   deselect();
   if (gameState === "shooting") {
     clearDialogueBox();
@@ -712,4 +715,141 @@ function diagonal(x1, y1, x2, y2) {
     mapSquares.push(startingMap[coordinate[0] - 1][coordinate[1] - 1]);
   });
   return mapSquares;
+}
+
+function flood(object) {
+  object.htmlNode.classList.remove(
+    "land",
+    "ocean-left",
+    "ocean-right",
+    "ocean-above",
+    "ocean-below",
+    "border-top-left",
+    "border-top-right",
+    "border-bottom-right",
+    "border-bottom-left",
+    "usa"
+  );
+  object.htmlNode.classList.add("ocean");
+  object.type = "ocean";
+  console.log(object.type);
+  let surroundings = getSurroundingSquares(object);
+
+  // edges
+  if (surroundings[1].type === "land") {
+    surroundings[1].htmlNode.classList.add("ocean-below");
+    surroundings[1].htmlNode.classList.remove(
+      "border-top-left",
+      "border-top-right",
+      "border-bottom-right",
+      "border-bottom-left"
+    );
+  }
+  if (surroundings[3].type === "land") {
+    surroundings[3].htmlNode.classList.add("ocean-right");
+    surroundings[3].htmlNode.classList.remove(
+      "border-top-left",
+      "border-top-right",
+      "border-bottom-right",
+      "border-bottom-left"
+    );
+  }
+  if (surroundings[4].type === "land") {
+    surroundings[4].htmlNode.classList.add("ocean-left");
+    surroundings[4].htmlNode.classList.remove(
+      "border-top-left",
+      "border-top-right",
+      "border-bottom-right",
+      "border-bottom-left"
+    );
+  }
+  if (surroundings[6].type === "land") {
+    surroundings[6].htmlNode.classList.add("ocean-above");
+    surroundings[6].htmlNode.classList.remove(
+      "border-top-left",
+      "border-top-right",
+      "border-bottom-right",
+      "border-bottom-left"
+    );
+  }
+
+  // corners
+  if (
+    surroundings[3].type === "land" &&
+    surroundings[1].type === "land" &&
+    surroundings[0].type === "land"
+  ) {
+    surroundings[0].htmlNode.classList.add("border-bottom-right");
+    console.log(`Top-left corner:`);
+    console.log(surroundings[0]);
+  } else {
+    surroundings[0].htmlNode.classList.remove("border-bottom-right");
+  }
+  if (
+    surroundings[1].type === "land" &&
+    surroundings[4].type === "land" &&
+    surroundings[2].type === "land"
+  ) {
+    surroundings[2].htmlNode.classList.add("border-bottom-left");
+  } else {
+    surroundings[2].htmlNode.classList.remove("border-bottom-left");
+  }
+  if (
+    surroundings[4].type === "land" &&
+    surroundings[6].type === "land" &&
+    surroundings[7].type === "land"
+  ) {
+    surroundings[7].htmlNode.classList.add("border-top-left");
+  } else {
+    surroundings[7].htmlNode.classList.remove("border-top-left");
+  }
+  if (
+    surroundings[6].type === "land" &&
+    surroundings[3].type === "land" &&
+    surroundings[5].type === "land"
+  ) {
+    surroundings[5].htmlNode.classList.add("border-top-right");
+  } else {
+    surroundings[5].htmlNode.classList.remove("border-top-right");
+  }
+}
+
+/*
+0 1 2
+3   4
+5 6 7
+*/
+
+function getSurroundingSquares(object) {
+  let array = [];
+  let dummyDiv = document.createElement("div");
+  if (object.row === 1) {
+    array.push({ type: "land", htmlNode: dummyDiv });
+    array.push({ type: "land", htmlNode: dummyDiv });
+    array.push({ type: "land", htmlNode: dummyDiv });
+    array.push(startingMap[object.row - 1][object.col - 2]);
+    array.push(startingMap[object.row - 1][object.col]);
+    array.push(startingMap[object.row][object.col - 2]);
+    array.push(startingMap[object.row][object.col - 1]);
+    array.push(startingMap[object.row][object.col]);
+  } else if (object.col === 1) {
+    array.push({ type: "land", htmlNode: dummyDiv });
+    array.push(startingMap[object.row - 2][object.col - 1]);
+    array.push(startingMap[object.row - 2][object.col]);
+    array.push({ type: "land", htmlNode: dummyDiv });
+    array.push(startingMap[object.row - 1][object.col]);
+    array.push({ type: "land", htmlNode: dummyDiv });
+    array.push(startingMap[object.row][object.col - 1]);
+    array.push(startingMap[object.row][object.col]);
+  } else {
+    array.push(startingMap[object.row - 2][object.col - 2]);
+    array.push(startingMap[object.row - 2][object.col - 1]);
+    array.push(startingMap[object.row - 2][object.col]);
+    array.push(startingMap[object.row - 1][object.col - 2]);
+    array.push(startingMap[object.row - 1][object.col]);
+    array.push(startingMap[object.row][object.col - 2]);
+    array.push(startingMap[object.row][object.col - 1]);
+    array.push(startingMap[object.row][object.col]);
+  }
+  return array;
 }

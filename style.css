@@ -372,12 +372,38 @@ body {
 
 /* INNER BORDERS */
 
+/* can only do one :before and one :after */
+
+.border-bottom-left::before,
 .border-top-left::before,
 .border-top-right::after,
-.border-bottom-left::before,
 .border-bottom-right::after {
   content: "";
 }
+
+.border-bottom-left.border-top-left::before {
+  border-top: 2px solid var(--coastline-color);
+  border-right: 2px solid var(--coastline-color);
+  border-bottom: 0;
+  align-self: flex-end;
+  border-bottom-right-radius: 0;
+}
+
+.border-bottom-right.border-top-right::after {
+  border-top: 2px solid var(--coastline-color);
+  border-left: 2px solid var(--coastline-color);
+  border-bottom: 0;
+  align-self: flex-end;
+  border-bottom-left-radius: 0;
+}
+
+/* .border-bottom-left::before.border-top-left::before {
+  border-top: 2px solid var(--coastline-color);
+  border-right: 2px solid var(--coastline-color);
+  border-bottom: 0;
+  align-self: flex-end;
+  border-bottom-right-radius: 0;
+} */
 
 .border-top-left::before,
 .border-top-right::after {
