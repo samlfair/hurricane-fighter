@@ -67,8 +67,6 @@ elements.introButton.onclick = () => {
   if (gameState === "instruction") {
     elements.introduction.classList.add("hidden");
     elements.instructions1.classList.remove("hidden");
-  } else {
-    console.log(gameState);
   }
 };
 
@@ -76,8 +74,6 @@ elements.instructions1Button.onclick = () => {
   if (gameState === "instruction") {
     elements.instructions1.classList.add("hidden");
     elements.instructions2.classList.remove("hidden");
-  } else {
-    console.log(gameState);
   }
 };
 
@@ -87,8 +83,6 @@ elements.instructions2Button.onclick = () => {
     elements.buttonBox.classList.add("hidden");
     elements.dialogueBox.classList.remove("hidden");
     gameStateShooting();
-  } else {
-    console.log(gameState);
   }
 };
 
@@ -112,8 +106,6 @@ elements.cashButton.onclick = () => {
     elements.purchaseBox.classList.remove("hidden");
     elements.buttonBox.classList.remove("hidden");
     gameStateInstruction();
-  } else {
-    console.log(gameState);
   }
 };
 
@@ -127,13 +119,11 @@ elements.buyWall.onclick = () => {
   gameStatePurchasing();
   elements.purchaseBox.classList.add("hidden");
   elements.wallInstrux.classList.remove("hidden");
-  console.log("Buy some wall!");
   itemToPurchase = "wall";
   elements.htmlGrid.classList.add("wall");
 };
 
 elements.cancelAmmoPurchase.onclick = () => {
-  console.log("Click");
   elements.ammoInstrux.classList.add("hidden");
   elements.htmlGrid.classList.remove("wall");
   elements.purchaseBox.classList.remove("hidden");
@@ -143,7 +133,6 @@ elements.cancelAmmoPurchase.onclick = () => {
 };
 
 elements.cancelWallPurchase.onclick = () => {
-  console.log("Click");
   elements.wallInstrux.classList.add("hidden");
   elements.htmlGrid.classList.remove("wall");
   elements.purchaseBox.classList.remove("hidden");
@@ -154,7 +143,6 @@ elements.cancelWallPurchase.onclick = () => {
 
 elements.buyAmmo.onclick = () => {
   gameStatePurchasing();
-  console.log("Buy some ammo!");
   itemToPurchase = "ammo";
   elements.purchaseBox.classList.add("hidden");
   elements.ammoInstrux.classList.remove("hidden");
@@ -163,11 +151,8 @@ elements.buyAmmo.onclick = () => {
 function lowerBudget(amount) {
   budget -= amount;
   elements.budgetBar.setAttribute("value", budget);
-  console.log(budget);
   if (budget <= 0) {
-    console.log("Budget is low");
     budget = 0;
-    console.log(budget);
     gameOver(
       "You ran out of money! Congress is enraged, and your party has turned on you. Sad!"
     );
@@ -274,7 +259,6 @@ function animateMovement(state, colChange, rowChange) {
 
 const mover = (state) => ({
   move(xMinChange, xMaxChange, yMinChange, yMaxChange) {
-    console.log(`${xMinChange}, ${xMaxChange}, ${yMinChange}, ${yMaxChange}`);
     var colChange = utilities.randomNumber(xMinChange, xMaxChange);
     var rowChange = utilities.randomNumber(yMinChange, yMaxChange);
     var colInitial = state.colIndex;
@@ -283,7 +267,6 @@ const mover = (state) => ({
     var rowFinal = rowInitial + rowChange;
     colFinal < 1 ? (colFinal = 1) : null;
     rowFinal < 1 ? (rowFinal = 1) : null;
-    console.log(`${colFinal}, ${rowFinal}`);
     var floodCount = 0;
 
     let traversion = diagonal(colInitial, rowInitial, colFinal, rowFinal);
@@ -373,7 +356,6 @@ const mover = (state) => ({
 
     // Approval Rating
     setTimeout(function () {
-      console.log(`flood count: ${floodCount}`);
       if (floodCount > 1) {
         addToDialogueBox(`Large swaths of the South have been flooded.`);
         lowerApprovalRating(Math.floor(floodCount / 2));
@@ -402,6 +384,9 @@ const weakener = (state) => ({
         ),
         1
       );
+    }
+    if (utilities.hurricanes.length === 0) {
+      utilities.hurricanes.push(Hurricane());
     }
     if (utilities.hurricanes.length === 0 && listOfNames.length === 0) {
       winGame();
@@ -478,20 +463,17 @@ function htmlNodeConstructor(object) {
 // TURN CHANGE
 
 function turnClick() {
-  console.log([...utilities.hurricanes]);
   [...utilities.hurricanes].forEach((hurricane, index, array) =>
     hurricaneTurn(hurricane, index, array)
   );
   if (utilities.randomNumber(0, 5) === 0 && utilities.hurricanes.length < 4) {
     let newHurricane = Hurricane();
     utilities.hurricanes.push(newHurricane);
-    console.log(newHurricane);
     newHurricane.render();
   }
   if (utilities.hurricanes.length === 0) {
     let newHurricane = Hurricane();
     utilities.hurricanes.push(newHurricane);
-    console.log(newHurricane);
     newHurricane.render();
   }
 }
@@ -514,8 +496,6 @@ function hurricaneTurn(hurricane, index, array) {
     if (startingMap[hurricane.rowIndex][hurricane.colIndex].type === "land") {
       hurricane.weaken();
       if (utilities.hurricanes.length === 0) {
-        console.log(utilities.hurricanes);
-        utilities.hurricanes.push(Hurricane());
       }
     } else {
       let rand = utilities.randomNumber(0, 5);
@@ -535,7 +515,6 @@ function hurricaneTurn(hurricane, index, array) {
 
 function squareClick(object) {
   console.log(object);
-  console.log(getSurroundingSquares(object));
   deselect();
   if (gameState === "shooting") {
     clearDialogueBox();
@@ -763,7 +742,6 @@ function flood(object) {
   );
   object.htmlNode.classList.add("ocean");
   object.type = "ocean";
-  console.log(object.type);
   let surroundings = getSurroundingSquares(object);
 
   // edges
@@ -811,8 +789,6 @@ function flood(object) {
     surroundings[0].type === "land"
   ) {
     surroundings[0].htmlNode.classList.add("border-bottom-right");
-    console.log(`Top-left corner:`);
-    console.log(surroundings[0]);
   } else {
     surroundings[0].htmlNode.classList.remove("border-bottom-right");
   }
