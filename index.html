@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hurricane Fighter</title>
     <link rel="stylesheet" href="./style.css" />
-    <link
+    <!-- <link
       href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css"
       rel="stylesheet"
-    />
+    /> -->
     <link
       href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
       rel="stylesheet"
@@ -19,74 +19,71 @@
     <div id="container">
       <div id="grid-container">
         <div class="title-card-visible">Loading...</div>
-        <div class="nes-container is-rounded button-box">
-          <div class="inner-div">
-            <!-- 1. INTRODUCTION -->
-            <div id="introduction">
-              <p>
-                Hurricanes are running wild off the coast of the American south.
-              </p>
-              <p>
-                As leader of the free world, it's your job to stop them.
-                Stockpile ammo, build walls, and shoot at the hurricanes to keep
-                them out.
-              </p>
-              <button class="enter">Next</button>
-            </div>
-            <!-- 2. INSTRUCTIONS 1 -->
-            <div id="instructions-1" class="hidden">
-              <p>
-                Keep in mind: election season is coming up. Try to keep your
-                approval rating up to improve your chances of reelection.
-              </p>
-              <button class="enter">OK</button>
-            </div>
-            <!-- 3. INSTRUCTIONS 2 -->
-            <div id="instructions-2" class="hidden">
-              <p>Instructions</p>
-              <p>
-                Select a city by clicking on it. Then click on a hurricane to
-                make the residents of that city shoot at the hurricane.
-              </p>
-              <p>
-                The further away the hurricane is, the more likely that you will
-                miss.
-              </p>
-              <button class="enter">OK</button>
-            </div>
-            <!-- 4. DIALOGUE BOX -->
-            <div id="dialogue-box" class="hidden"></div>
-            <button class="enter" id="dialogue-box-button">OK</button>
-
-            <!-- 5. PURCHASE BOX -->
-            <div id="purchase-box" class="hidden">
-              <p>Purchase:</p>
-              <div class="row" id="purchase-ammo">
-                <p>Ammo</p>
-                <p></p>
-                <p>$100</p>
-              </div>
-              <div class="row" id="purchase-wall">
-                <p>Wall</p>
-                <p></p>
-                <p>$500</p>
-              </div>
-              <button id="close-purchase-box" class="cancel">Close</button>
-            </div>
-
-            <!-- 6. PURCHASE WALL -->
-            <div id="wall-instrux" class="hidden">
-              <p>Select where you would like to build a wall.</p>
-              <button class="enter">Done</button>
-            </div>
-
-            <!-- 7. PURCHASE AMMO -->
-            <div id="ammo-instrux" class="hidden">
-              <p>Select the cities you would like to buy ammo for.</p>
-              <button class="enter">Done</button>
-            </div>
-            <!-- END SCRIPT -->
+        <div class="button-box border">
+          <!-- 1. INTRODUCTION -->
+          <div id="introduction">
+            <p>
+              Hurricanes are running wild off the coast of the American South.
+            </p>
+            <p>
+              As leader of the free world, it's your job to stop them. Stockpile
+              ammo, build walls, and shoot at the hurricanes to keep them out.
+            </p>
+            <button class="enter">Next</button>
           </div>
+          <!-- 2. INSTRUCTIONS 1 -->
+          <div id="instructions-1" class="hidden">
+            <p>
+              Keep in mind: election season is coming up. Try to keep your
+              approval rating up to improve your chances of reelection.
+            </p>
+            <button class="enter">OK</button>
+          </div>
+          <!-- 3. INSTRUCTIONS 2 -->
+          <div id="instructions-2" class="hidden">
+            <p>Instructions</p>
+            <p>
+              Select a city by clicking on it. Then click on a hurricane to make
+              the residents of that city shoot at the hurricane.
+            </p>
+            <p>
+              The further away the hurricane is, the more likely that you will
+              miss.
+            </p>
+            <button class="enter">OK</button>
+          </div>
+          <!-- 4. DIALOGUE BOX -->
+          <div id="dialogue-box" class="hidden"></div>
+          <button class="enter" id="dialogue-box-button">OK</button>
+
+          <!-- 5. PURCHASE BOX -->
+          <div id="purchase-box" class="hidden">
+            <p>Purchase:</p>
+            <div class="row" id="purchase-ammo">
+              <p>Ammo</p>
+              <p></p>
+              <p>$100</p>
+            </div>
+            <div class="row" id="purchase-wall">
+              <p>Wall</p>
+              <p></p>
+              <p>$500</p>
+            </div>
+            <button id="close-purchase-box" class="cancel">Close</button>
+          </div>
+
+          <!-- 6. PURCHASE WALL -->
+          <div id="wall-instrux" class="hidden">
+            <p>Select where you would like to build a wall.</p>
+            <button class="enter">Done</button>
+          </div>
+
+          <!-- 7. PURCHASE AMMO -->
+          <div id="ammo-instrux" class="hidden">
+            <p>Select the cities you would like to buy ammo for.</p>
+            <button class="enter">Done</button>
+          </div>
+          <!-- END SCRIPT -->
         </div>
         <div id="cash-button">$</div>
       </div>

@@ -35,6 +35,15 @@ body {
   max-width: 840px;
 }
 
+/* Pixelated Border */
+
+.border {
+  box-shadow: 4px 0px 0px 0px white, -4px 0px 0px 0px white,
+    0px 4px 0px 0px white, 0px -4px 0px 0px white, 0px 0px 0px 4px black,
+    0px 8px 0px 0px black, 0px -8px 0px 0px black, 8px 0px 0px 0px black,
+    -8px 0px 0px 0px black;
+}
+
 /* Grid */
 
 #grid-container {
@@ -129,9 +138,7 @@ body {
 }
 
 #grid-container .button-box {
-  color: white;
   grid-column-start: 2;
-  /* grid-column-end: 33; */
   grid-row-end: 25;
   grid-row-start: 1;
   grid-column-end: 33;
@@ -140,36 +147,44 @@ body {
   z-index: 10;
   background: white;
   padding: 0;
-  overflow: visible;
   min-width: 200px;
   max-width: 500px;
-  font-size: 0.7em;
+  font-size: 0.8em;
   max-height: 300px;
   overflow: scroll;
-}
-
-.button-box .inner-div {
-  background-color: #212529;
   padding: 20px;
 }
 
-.enter,
-.cancel {
+.button-box p {
+  padding-top: 0;
+  margin-top: 0;
+  line-height: 1.6em;
+  padding-bottom: 0.5em;
+}
+
+button {
+  font-family: "Press Start 2p", monospace;
+  padding: 12px;
+  /* background: lightgray; */
+  border: 3px solid black;
+  float: right;
   margin-top: 15px;
-  margin-bottom: 0;
-  padding: 10px;
-  text-align: right;
-  border: 2px solid white;
+  min-width: 30%;
+  box-shadow: 4px 4px 0 0 black;
+  /* border: 2px solid black; */
+}
+
+button:hover {
+  margin-bottom: 3px;
+  margin-right: 3px;
+  margin-top: 12px;
+  box-shadow: 7px 7px 0 0 black;
 }
 
 /* SHOW HIDE DIALOGUE BOX BUTTON WITH CSS? */
 
 #dialogue-box.hidden + button {
   display: none;
-}
-
-.enter:hover {
-  background: green;
 }
 
 .cancel:hover {
@@ -323,6 +338,10 @@ body {
   min-height: 20px;
   width: 100%;
   padding-top: 20px;
+}
+
+progress {
+  border: 2px solid black;
 }
 
 /*                         */
