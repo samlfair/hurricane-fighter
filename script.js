@@ -33,17 +33,6 @@ function endGame(boolean, reason) {
   });
 }
 
-function proceed() {
-  if (gameState === "storm") {
-    raiseBudget(100);
-    // gameStateShooting();
-    clearDialogueBox();
-    turnClick();
-  } else if (gameState === "shooting") {
-    clearDialogueBox();
-  }
-}
-
 const gameStatePurchasing = () => (gameState = "purchasing");
 const gameStateShooting = () => (gameState = "shooting");
 const gameStateInstruction = () => (gameState = "instruction");
@@ -73,16 +62,6 @@ elements.instructions2Button.onclick = () => {
     elements.buttonBox.classList.add("hidden");
     elements.dialogueBox.classList.remove("hidden");
     gameStateShooting();
-  }
-};
-
-// Dialog Box
-
-elements.dialogueButton.onclick = () => {
-  if (gameState === "storm") {
-    proceed();
-  } else if (gameState === "shooting") {
-    clearDialogueBox();
   }
 };
 
@@ -463,24 +442,30 @@ function htmlNodeConstructor(object) {
 // TURN CHANGE
 // TURN CHANGE
 
+elements.dialogueButton.onclick = () => {
+  console.log("dialogue box");
+  clearDialogueBox();
+  if (gameState === "storm") {
+    raiseBudget(100);
+    turnClick();
+  } else if (gameState === "shooting") {
+    clearDialogueBox();
+  }
+};
+
 function turnClick() {
   [...util.hurricanes].forEach((hurricane, index, array) =>
     hurricaneTurn(hurricane, index, array)
   );
-  if (util.random(0, 5) === 0 && util.hurricanes.length < 3) {
-    let newHurricane = Hurricane();
-    util.hurricanes.push(newHurricane);
-    newHurricane.render();
-  }
-  if (util.hurricanes.length === 0) {
-    let newHurricane = Hurricane();
-    util.hurricanes.push(newHurricane);
-    newHurricane.render();
+  if (
+    (util.random(0, 5) === 0 && util.hurricanes.length < 3) ||
+    util.hurricanes.length === 0
+  ) {
+    util.hurricanes.push(Hurricane().render());
   }
 }
 
 function hurricaneTurn(hurricane, index, array) {
-  console.log(hurricane);
   let xMin = -4;
   let xMax = -1;
   if (hurricane.rowIndex < 10) {
@@ -510,7 +495,6 @@ function hurricaneTurn(hurricane, index, array) {
     }
     hurricane.render();
   }, 3000);
-  // remove weakened hurricane
 }
 
 // Click on Square //
