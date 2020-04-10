@@ -465,6 +465,16 @@ function turnClick() {
   }
 }
 
+// function deleteHurricane(hurricane) {
+//   util.hurricanes.splice(
+//     util.hurricanes.findIndex((object) =>
+//       object === hurricane ? true : false
+//     ),
+//     1
+//   );
+//   hurricane.htmlNode.remove();
+// }
+
 function hurricaneTurn(hurricane, index, array) {
   let xMin = -4;
   let xMax = -1;
@@ -474,7 +484,11 @@ function hurricaneTurn(hurricane, index, array) {
   }
   hurricane.move(xMin, xMax, -4, -1);
   // remove hurricane from off the map
-  if (hurricane.colIndex < 1 || hurricane.rowIndex < 1) {
+  if (
+    hurricane.colIndex < 1 ||
+    hurricane.rowIndex < 1 ||
+    hurricane.colIndex > 32
+  ) {
     hurricane.htmlNode.remove();
     array.splice(index, 1);
   }
@@ -549,6 +563,7 @@ function cityClick(city) {
 }
 
 function hurricaneClick(hurricane) {
+  console.log(hurricane);
   if (gameState === "shooting") {
     if (util.selected.itemOne.type === "city") {
       shoot(util.selected.itemOne, hurricane, 1);
