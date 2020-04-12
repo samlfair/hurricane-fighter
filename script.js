@@ -1,6 +1,6 @@
 // Imports
 
-import startingMap from "./scripts/map-1.js";
+import map from "./scripts/map-1.js";
 import * as elements from "./scripts/elements.js";
 import * as util from "./scripts/utilities.js";
 // import { City, Hurricane } from "./scripts/factoryFunctions.js";
@@ -177,7 +177,7 @@ function renderDivGrid(array) {
 function createOneGridDiv(item, rowIndex, colIndex) {
   let div = document.createElement("div");
   div.className = item.startingClasses;
-  elements.htmlGrid.appendChild(div);
+  elements.htmlGrid.insertBefore(div, elements.buttonBox);
   item.htmlNode = div;
   div.addEventListener("click", function () {
     squareClick(item);
@@ -227,64 +227,68 @@ function animateMovement(state, colChange, rowChange) {
   state.htmlNode.style.transform = `translate(${dx}px, ${dy}px)`;
 }
 
-const mover = (state) => ({
-  move(xMinChange, xMaxChange, yMinChange, yMaxChange) {
-    var colChange = util.random(xMinChange, xMaxChange);
-    var rowChange = util.random(yMinChange, yMaxChange);
-    var colInitial = state.colIndex;
-    var rowInitial = state.rowIndex;
-    var colFinal = colInitial + colChange;
-    var rowFinal = rowInitial + rowChange;
-    colFinal < 1 ? (colFinal = 1) : null;
-    rowFinal < 1 ? (rowFinal = 1) : null;
-    var floodCount = 0;
+// Generate random coordinates for hurricane movement
+function randomizeHurricaneMovement(hurricane) {
+  // Add a random number to starting x, depending on y
+  console.log(hurricane.rowIndex < 10 ? -2 : -4);
+  console.log(hurricane.rowIndex < 10 ? 2 : -1);
+  let xFinal =
+    hurricane.colIndex +
+    util.random(
+      hurricane.rowIndex < 10 ? -2 : -4,
+      hurricane.rowIndex < 10 ? 2 : -1
+    );
+  // Add a random number to y
+  let yFinal = hurricane.rowIndex + util.random(-4, -1);
+  if (xFinal < 1) {
+    xFinal = 1;
+  }
+  if (yFinal < 1) {
+    yFinal = 1;
+  }
+  // Return an array with x and y
+  hurricane.col2 = xFinal;
+  hurricane.row2 = yFinal;
+}
 
-    let traversion = diagonal(colInitial, rowInitial, colFinal, rowFinal);
-    traversion.shift;
-
-    traversion.forEach(function (square, index, array) {
-      if (square.col === 1 || square.row === 1) {
-        array.splice(index + 1);
-        let lastSquare = traversion[traversion.length - 1];
-        colChange = lastSquare.col - colInitial;
-        rowChange = lastSquare.row - rowInitial;
-        colFinal = lastSquare.col;
-        rowFinal = lastSquare.row;
-      }
-    });
-
-    // Hit wall
-
-    traversion.forEach(function (square, index, array) {
-      if (square.type === "wall") {
-        array.splice(index + 1);
+function hitWall(hurricane, traversion) {
+  traversion.forEach(function (square, traversion) {
+    if (square.type === "wall") {
+      hurricane.col2 = traversion[traversion.length - 1].col;
+      hurricane.row2 = traversion[traversion.length - 1].row;
+      traversion.splice(traversion.findIndex((object) => object === hurricane));
+      setTimeout(function () {
         renderDialogueBox(
-          `${state.name} hit a wall! Your approval rating jumps!`
+          `${hurricane.name} hit a wall! Your approval rating jumps!`
         );
         raiseApprovalRating(3);
-        let lastSquare = traversion[traversion.length - 1];
-        colChange = lastSquare.col - colInitial;
-        rowChange = lastSquare.row - rowInitial;
-        colFinal = lastSquare.col;
-        rowFinal = lastSquare.row;
-        setTimeout(function () {
-          while (state.strength > 0) {
-            state.weaken();
-          }
-        }, 3500);
-      }
-    });
+        while (hurricane.strength > 0) {
+          hurricane.weaken();
+        }
+      });
+    }
+  }, 3000);
+}
 
-    state.colIndex = colFinal;
-    state.rowIndex = rowFinal;
+const mover = (state) => ({
+  move() {
+    var floodCount = 0;
+    var col1 = state.colIndex;
+    var row1 = state.rowIndex;
 
-    // Animation
+    randomizeHurricaneMovement(state);
 
-    animateMovement(state, colChange, rowChange);
+    // Hitting map boundaries
+    let traversion = util.diagonal(col1, row1, state.col2, state.row2, map);
+    state.col2 = traversion[traversion.length - 1].col;
+    state.row2 = traversion[traversion.length - 1].row;
 
-    // Paint
+    // Hitting walls
+    hitWall(state, traversion);
 
-    traversion.forEach(function (square, i) {
+    // Collisions
+
+    traversion.forEach(function (square, index) {
       setTimeout(function () {
         if (square.type === "land") {
           if (square.feature) {
@@ -292,36 +296,32 @@ const mover = (state) => ({
               `${state.name} has hit ${square.feature.city.name}! Your approval rating drops 3 points.`
             );
             lowerApprovalRating(3);
-          } else {
-            if (square.country === "USA" && square.row < 13) {
-              floodCount++;
-            }
+          } else if (square.country === "USA" && square.type === "land") {
+            floodCount++;
           }
-          // square.htmlNode.classList.add("flooded");
           flood(square);
         }
-      }, (3000 / traversion.length) * i);
+      }, (3000 / traversion.length) * index);
     });
+
+    animateMovement(state, state.col2 - col1, state.row2 - row1);
 
     // Move
 
+    state.colIndex = state.col2;
+    state.rowIndex = state.row2;
+
     setTimeout(function () {
-      state.htmlNode.classList.remove("col" + colInitial, "row" + rowInitial);
+      state.htmlNode.classList.remove("col" + col1, "row" + row1);
       state.htmlNode.classList.remove("transition");
 
       state.htmlNode.style.transform = ``;
       console.log("just wait");
 
-      state.htmlNode.classList.add("col" + colFinal, "row" + rowFinal);
+      state.htmlNode.classList.add("col" + state.col2, "row" + state.row2);
       if (state.colIndex === 1 || state.rowIndex === 1) {
         addToDialogueBox(`${state.name} disappeared.`);
-        state.htmlNode.remove();
-        util.hurricanes.splice(
-          util.hurricanes.findIndex((object) =>
-            object === state ? true : false
-          ),
-          1
-        );
+        util.deleteHurricane(state);
       }
       if (util.hurricanes.length === 0) {
         util.hurricanes.push(Hurricane().render());
@@ -387,6 +387,8 @@ function Hurricane() {
     type: "hurricane",
     icon: `<img src="./images/hurricane.png">`,
     subtitle: null,
+    col2: null,
+    row2: null,
   };
   hurricane.subtitle = `Category ${hurricane.strength}`;
   htmlNodeConstructor(hurricane);
@@ -423,7 +425,7 @@ function City(name, colIndex, rowIndex, iconUrl = "./images/city-1.png") {
   city.htmlNode.addEventListener("click", function () {
     cityClick(city);
   });
-  startingMap[rowIndex - 1][colIndex - 1].feature = { city: city };
+  map[rowIndex - 1][colIndex - 1].feature = { city: city };
 
   return Object.assign(city, renderer(city));
 }
@@ -435,7 +437,7 @@ function htmlNodeConstructor(object) {
   object.htmlNode.appendChild(object.iconNode);
   object.htmlNode.appendChild(object.titleNode);
   object.htmlNode.appendChild(object.subtitleNode);
-  elements.htmlGrid.appendChild(object.htmlNode);
+  elements.htmlGrid.insertBefore(object.htmlNode, elements.buttonBox);
 }
 
 // TURN CHANGE
@@ -465,39 +467,23 @@ function turnClick() {
   }
 }
 
-// function deleteHurricane(hurricane) {
-//   util.hurricanes.splice(
-//     util.hurricanes.findIndex((object) =>
-//       object === hurricane ? true : false
-//     ),
-//     1
-//   );
-//   hurricane.htmlNode.remove();
-// }
+// only define xMax
 
-function hurricaneTurn(hurricane, index, array) {
-  let xMin = -4;
-  let xMax = -1;
-  if (hurricane.rowIndex < 10) {
-    xMin = -3;
-    xMax = 3;
-  }
-  hurricane.move(xMin, xMax, -4, -1);
+function hurricaneTurn(hurricane) {
+  hurricane.move();
+
   // remove hurricane from off the map
   if (
     hurricane.colIndex < 1 ||
     hurricane.rowIndex < 1 ||
     hurricane.colIndex > 32
   ) {
-    hurricane.htmlNode.remove();
-    array.splice(index, 1);
+    util.deleteHurricane(hurricane);
   }
   // weaken hurricane on land
   setTimeout(function () {
-    if (startingMap[hurricane.rowIndex][hurricane.colIndex].type === "land") {
+    if (map[hurricane.rowIndex][hurricane.colIndex].type === "land") {
       hurricane.weaken();
-      if (util.hurricanes.length === 0) {
-      }
     } else {
       let rand = util.random(0, 5);
       if (rand < 2) {
@@ -541,7 +527,7 @@ let houston = City("Houston", 10, 10, "./images/city-1.png").render();
 let dallas = City("Dallas", 8, 4, "./images/city-1.png").render();
 let atlanta = City("Atlanta", 20, 3, "./images/city-1.png").render();
 
-renderDivGrid(startingMap);
+renderDivGrid(map);
 
 // CHARACTER CLICKING
 // CHARACTER CLICKING
@@ -597,6 +583,7 @@ function shoot(shooter, target) {
       shooter.rowIndex - target.rowIndex
     );
     addAmmo(shooter, -1);
+    shooter.render();
     if (distance < 6) {
       hit = !!util.random(0, 2);
     } else {
@@ -718,15 +705,6 @@ function raiseApprovalRating(amount) {
   elements.approvalBar.setAttribute("value", approvalRating);
 }
 
-function diagonal(x1, y1, x2, y2) {
-  const coordinatesArray = util.bresenham(x1, y1, x2, y2);
-  const mapSquares = [];
-  coordinatesArray.forEach(function (coordinate) {
-    mapSquares.push(startingMap[coordinate[0] - 1][coordinate[1] - 1]);
-  });
-  return mapSquares;
-}
-
 function flood(object) {
   object.htmlNode.classList.remove(
     "land",
@@ -834,29 +812,29 @@ function getSurroundingSquares(object) {
     array.push({ type: "land", htmlNode: dummyDiv });
     array.push({ type: "land", htmlNode: dummyDiv });
     array.push({ type: "land", htmlNode: dummyDiv });
-    array.push(startingMap[object.row - 1][object.col - 2]);
-    array.push(startingMap[object.row - 1][object.col]);
-    array.push(startingMap[object.row][object.col - 2]);
-    array.push(startingMap[object.row][object.col - 1]);
-    array.push(startingMap[object.row][object.col]);
+    array.push(map[object.row - 1][object.col - 2]);
+    array.push(map[object.row - 1][object.col]);
+    array.push(map[object.row][object.col - 2]);
+    array.push(map[object.row][object.col - 1]);
+    array.push(map[object.row][object.col]);
   } else if (object.col === 1) {
     array.push({ type: "land", htmlNode: dummyDiv });
-    array.push(startingMap[object.row - 2][object.col - 1]);
-    array.push(startingMap[object.row - 2][object.col]);
+    array.push(map[object.row - 2][object.col - 1]);
+    array.push(map[object.row - 2][object.col]);
     array.push({ type: "land", htmlNode: dummyDiv });
-    array.push(startingMap[object.row - 1][object.col]);
+    array.push(map[object.row - 1][object.col]);
     array.push({ type: "land", htmlNode: dummyDiv });
-    array.push(startingMap[object.row][object.col - 1]);
-    array.push(startingMap[object.row][object.col]);
+    array.push(map[object.row][object.col - 1]);
+    array.push(map[object.row][object.col]);
   } else {
-    array.push(startingMap[object.row - 2][object.col - 2]);
-    array.push(startingMap[object.row - 2][object.col - 1]);
-    array.push(startingMap[object.row - 2][object.col]);
-    array.push(startingMap[object.row - 1][object.col - 2]);
-    array.push(startingMap[object.row - 1][object.col]);
-    array.push(startingMap[object.row][object.col - 2]);
-    array.push(startingMap[object.row][object.col - 1]);
-    array.push(startingMap[object.row][object.col]);
+    array.push(map[object.row - 2][object.col - 2]);
+    array.push(map[object.row - 2][object.col - 1]);
+    array.push(map[object.row - 2][object.col]);
+    array.push(map[object.row - 1][object.col - 2]);
+    array.push(map[object.row - 1][object.col]);
+    array.push(map[object.row][object.col - 2]);
+    array.push(map[object.row][object.col - 1]);
+    array.push(map[object.row][object.col]);
   }
   return array;
 }

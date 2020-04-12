@@ -188,7 +188,6 @@ progress {
   min-width: 200px;
   max-width: 500px;
   font-size: 0.8em;
-  overflow: scroll;
   padding: 20px;
 }
 
@@ -202,10 +201,12 @@ progress {
 button {
   font-family: "Press Start 2p", monospace;
   padding: 12px;
-  /* background: lightgray; */
+  background: white;
   border: 3px solid black;
   float: right;
   margin-top: 15px;
+  margin-bottom: 0;
+  margin-right: 0;
   min-width: 30%;
   box-shadow: 4px 4px 0 0 black;
   outline: none;

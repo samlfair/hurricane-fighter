@@ -1,4 +1,13 @@
-export { random, pythagorean, bresenham, listOfNames, hurricanes, selected };
+export {
+  random,
+  pythagorean,
+  bresenham,
+  diagonal,
+  deleteHurricane,
+  listOfNames,
+  hurricanes,
+  selected,
+};
 
 // Arrays
 
@@ -13,6 +22,14 @@ const selected = {
 };
 
 // Functions
+
+function deleteHurricane(hurricane) {
+  hurricanes.splice(
+    hurricanes.findIndex((object) => object === hurricane),
+    1
+  );
+  hurricane.htmlNode.remove();
+}
 
 function random(min, max) {
   let spread = max - min;
@@ -45,6 +62,23 @@ function bresenham(x1, y1, x2, y2) {
     coordinatesArray.push([y1, x1]);
   }
   return coordinatesArray;
+}
+
+function diagonal(x1, y1, x2, y2, map) {
+  const coordinatesArray = bresenham(x1, y1, x2, y2);
+  const mapSquares = [];
+  coordinatesArray.forEach(function (coordinate) {
+    if (
+      coordinate[1] >= 1 &&
+      coordinate[1] <= 33 &&
+      coordinate[0] >= 1 &&
+      coordinate[0] <= 25
+    ) {
+      mapSquares.push(map[coordinate[0] - 1][coordinate[1] - 1]);
+    }
+  });
+  mapSquares.shift;
+  return mapSquares;
 }
 
 const boysNames = [
